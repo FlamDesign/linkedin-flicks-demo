@@ -33,6 +33,20 @@ a{color:inherit;text-decoration:none}
 .fstate.err b{display:block;font-size:14px;margin-bottom:6px;color:#fff}
 .fwarn{position:absolute;left:8px;bottom:8px;font-size:11px;background:#fff6db;color:#7a5600;border-radius:999px;padding:3px 9px;pointer-events:none;z-index:2}
 
+.fimg{width:100%;height:100%;object-fit:cover;display:block;background:#dfe5ea;color:transparent;font-size:0}
+.pimg{border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06)}
+.pimg.hire{position:relative;aspect-ratio:1.91/1;overflow:hidden;background:#0f3d3e}
+.pimg.hire img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}
+.hire-in{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:24px 28px;color:#fff;background:linear-gradient(90deg,rgba(15,61,62,.96) 45%,rgba(15,61,62,.2))}
+.hire-in .hl{width:40px;height:40px;border-radius:8px;overflow:hidden;margin-bottom:12px}
+.hire-in .tag2{font-size:12px;font-weight:700;letter-spacing:.12em;color:#7ee0c3}
+.hire-in b{font-size:clamp(20px,4.4vw,28px);line-height:1.15;margin:6px 0 4px}
+.hire-in .sub{font-size:14px;opacity:.85}
+.hire-in .chips2{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.hire-in .chips2 i{font-style:normal;font-size:12px;background:rgba(255,255,255,.14);border-radius:999px;padding:3px 10px}
+.hire-in .apply{align-self:flex-start;margin-top:14px;background:#fff;color:#0f3d3e;font-weight:700;font-size:13px;border-radius:999px;padding:6px 14px}
+.gnav-m,.mtab,.mback{display:none}
+
 /* ---------- global nav ---------- */
 .gnav{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);height:52px}
 .gnav-in{max-width:1128px;margin:0 auto;height:100%;display:flex;align-items:center;padding:0 12px}
@@ -53,7 +67,7 @@ a{color:inherit;text-decoration:none}
 /* ---------- feed layout ---------- */
 .layout{max-width:1128px;margin:0 auto;padding:24px 12px 120px;display:grid;grid-template-columns:225px minmax(0,555px) 300px;gap:24px;justify-content:center}
 .lrail>.card,.rrail>.card{margin-bottom:8px;overflow:hidden}
-.pcard .cover{height:56px;background:linear-gradient(120deg,#304a62,#5c7f99 55%,#a8bfd0)}
+.pcard .cover{height:56px;background:#7d8b96 url("https://images.unsplash.com/photo-1423068728938-d506c096081e?w=600&q=80&auto=format&fit=crop") center 60%/cover}
 .pcard .av{width:72px;height:72px;border-radius:50%;margin:-36px 0 0 16px;border:2px solid #fff;overflow:hidden;background:#fff}
 .pcard .who{padding:10px 16px 14px}
 .pcard .nm{font-size:18px;font-weight:600;display:flex;align-items:center;gap:6px}
@@ -128,7 +142,7 @@ a{color:inherit;text-decoration:none}
 .istream .visit{position:absolute;left:12px;bottom:12px;pointer-events:auto;background:#fff;color:#000;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;display:flex;gap:6px;align-items:center}
 .istream .prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.25)}
 .istream .prog i{display:block;height:100%;width:0;background:#f5c518}
-.creatorvid{position:relative;height:100%;aspect-ratio:9/16;background:linear-gradient(170deg,#3b4a5a,#1d2733 55%,#0f141a);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
+.creatorvid{position:relative;height:100%;aspect-ratio:9/16;background:#1d2733 center/cover no-repeat;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
 .creatorvid .play{position:absolute;inset:0;display:grid;place-items:center}
 .creatorvid .play span{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;backdrop-filter:blur(4px)}
 .creatorvid h5{margin:0 0 6px;font-size:20px;line-height:1.25;font-weight:600}
@@ -245,30 +259,6 @@ a{color:inherit;text-decoration:none}
 .msgcta{margin:10px 0 2px;height:36px;padding:0 18px;border-radius:999px;background:var(--blue);color:#fff;font-weight:600;font-size:16px}
 .msgcta:hover{background:var(--blue-d)}
 
-/* mobile view */
-#v-mobile{background:#dcd9d3;padding:28px 12px 80px}
-.phone{width:390px;max-width:100%;height:min(844px,calc(100vh - 56px));margin:0 auto;border-radius:44px;background:#111;padding:12px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
-.screen{width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
-.sbar{height:40px;flex:none;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:14px;font-weight:600}
-.mhdr{height:48px;flex:none;background:#fff;display:flex;align-items:center;gap:14px;padding:0 12px;border-bottom:1px solid rgba(0,0,0,.08)}
-.mhdr .logo{width:30px;height:30px}
-.mhdr .sp{flex:1}
-.mhdr .ma{width:28px;height:28px;border-radius:50%;overflow:hidden}
-.mscroll{flex:1;overflow-y:auto;scrollbar-width:none}
-.mscroll::-webkit-scrollbar{display:none}
-.mscroll .post{border-radius:0;box-shadow:none;margin-bottom:8px}
-.mscroll .phead{padding:12px 12px 0}
-.mscroll .phead .lg{width:40px;height:40px}
-.mscroll .ptext{padding:8px 12px 10px}
-.mscroll .vwrap{height:auto}
-.mscroll .vwrap .flick{width:100%;height:auto}
-.mscroll .hbar{padding:10px 12px}
-.mscroll .pact{justify-content:space-between;padding:0 6px}
-.mscroll .pact button{flex-direction:column;gap:2px;height:52px;font-size:12px;padding:0 8px}
-.mnavb{height:56px;flex:none;background:#fff;border-top:1px solid rgba(0,0,0,.08);display:flex;justify-content:space-around;align-items:center;font-size:11px;color:var(--t2)}
-.mnavb span{display:flex;flex-direction:column;align-items:center;gap:2px}
-.mnavb span.on{color:var(--t1)}
-
 /* ---------- ad selector ---------- */
 .gpill{position:fixed;right:24px;bottom:64px;z-index:90;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;background:#1b1f23;color:#f2f2f2;font-weight:600;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .gpill:hover{background:#2a2f34}
@@ -316,26 +306,56 @@ a{color:inherit;text-decoration:none}
 .toast.on{opacity:1;transform:translateX(-50%)}
 
 /* responsive */
-@media (max-width:480px){ .layout .pact button span{display:none} .layout .pact button{padding:0 12px} }
 @media (max-width:1180px){ .cwin{right:24px;bottom:56px;height:min(640px,calc(100vh - 120px))} }
 @media (max-width:1100px){
   .layout{grid-template-columns:225px minmax(0,555px)}
   .rrail{display:none}
   .gsearch{width:200px}
-}
-@media (max-width:860px){
-  .layout{grid-template-columns:minmax(0,555px);padding-top:12px}
-  .lrail{display:none}
-  .gitems .gi:not(.keep){display:none}
-  .gsearch{flex:1;width:auto}
   .mlay{grid-template-columns:1fr}
   .mlay>aside{display:none}
-  .mbox{grid-template-columns:1fr}
-  .mbox .mleft{display:none}
-  .cwin{left:8px;right:8px;width:auto}
-  .vwrap{height:520px}
-  .gpanel{right:12px;left:12px;width:auto}
 }
+@media (max-width:900px){ .gitems .gi:not(.keep){display:none} .gsearch{flex:1;width:auto} }
+/* phone and small tablet: LinkedIn mobile web layout */
+@media (max-width:768px){
+  .gnav{height:52px}
+  .gnav-in{display:none}
+  .gnav-m{display:flex;align-items:center;gap:10px;height:100%;padding:0 12px}
+  .gnav-m .mav{width:32px;height:32px;border-radius:50%;overflow:hidden;flex:none}
+  .gnav-m .msrch{flex:1;min-width:0;height:34px;border-radius:4px;background:#edf3f8;display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--t2)}
+  .gnav-m .msrch input{border:0;outline:0;background:none;font:inherit;width:100%;color:var(--t1)}
+  .gnav-m .mmsg{position:relative;color:var(--t2);display:grid;place-items:center;width:36px;height:36px;flex:none}
+  .gnav-m .mmsg .bdg{position:absolute;top:0;right:-2px;min-width:17px;height:17px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;padding:0 4px;box-shadow:0 0 0 2px #fff}
+  .mtab{display:flex;position:fixed;left:0;right:0;bottom:0;height:56px;background:#fff;border-top:1px solid rgba(0,0,0,.1);z-index:45;justify-content:space-around;align-items:center}
+  .mtab a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--t2);min-width:60px}
+  .mtab a.on{color:var(--t1)}
+  .layout{display:block;padding:0 0 72px}
+  .lrail,.rrail,.share,.sortby{display:none}
+  .layout .card{border-radius:0;box-shadow:none}
+  .post{margin-bottom:8px}
+  .phead{padding:12px 12px 0}
+  .ptext{padding:8px 12px 10px}
+  .hbar{padding:10px 12px}
+  .social{padding:8px 12px}
+  .pact{justify-content:space-between;padding:0 4px}
+  .pact button{flex-direction:column;justify-content:center;gap:2px;height:54px;font-size:12px;padding:0 10px}
+  .pact button[aria-label^="Reacting"]{display:none}
+  .vwrap{height:min(78vh,620px)}
+  .istream .skip{top:52px;bottom:auto}
+  .dock{display:none}
+  .cwin{inset:0;width:auto;height:auto;border-radius:0;z-index:70}
+  .chips{padding-left:16px}
+  .mlay{display:block;padding:0}
+  .mbox{display:block;height:calc(100vh - 108px);min-height:0;border-radius:0;box-shadow:none}
+  .mbox .mleft{display:flex;height:100%;border-right:0}
+  .mbox .mright{display:none;height:100%}
+  .mbox.open .mleft{display:none}
+  .mbox.open .mright{display:flex}
+  .mback{display:grid}
+  .gpill,.no-dock .gpill{right:12px;bottom:68px}
+  .gpanel,.no-dock .gpanel{right:12px;left:12px;width:auto;bottom:116px}
+  .ctxline{padding:8px 12px}
+}
+@media (max-width:420px){ .pact button{padding:0 6px} .hire-in{padding:16px 18px} .hire-in .apply,.hire-in .chips2{display:none} }
 </style>
 </head>
 <body>
@@ -390,17 +410,8 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
-<!-- ================= MOBILE ================= -->
-<section class="view" id="v-mobile">
-  <div class="phone"><div class="screen">
-    <div class="sbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#000"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#000" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2" fill="#000"/><rect x="24" y="4" width="1.6" height="4" rx=".8" fill="#000" opacity=".4"/></svg></span></div>
-    <div class="mhdr" id="mhdr"></div>
-    <div class="mscroll" id="mfeed"></div>
-    <div class="mnavb" id="mnavb"></div>
-  </div></div>
-</section>
-
 <!-- ================= shared chrome ================= -->
+<nav class="mtab" id="mtab" aria-label="Primary"></nav>
 <button class="gpill" id="gpill" onclick="toggleGuide()" aria-expanded="false">Ad formats <i id="gcount"></i></button>
 <div class="gscrim" id="gscrim" onclick="toggleGuide(false)"></div>
 <div class="gpanel" id="gpanel" role="dialog" aria-label="Ad formats"></div>
@@ -437,21 +448,24 @@ const ME = { first:"Jordan", last:"Ellis", name:"Jordan Ellis",
 const BRANDS = {
   acer: { name:"Acer", domain:"store.acer.com", url:"https://store.acer.com/en-us/", ar:"9/16", dark:true,
     src:"https://storage.googleapis.com/bucket-fi-development-apps-5b0640d5/app/abc/videos/eeeu318dko8uchkx61k7dwza.js",
-    followers:"1,402,318 followers",
     variants:[
       {n:"Predator Helios Neo 16 AI", url:"https://store.acer.com/en-us/predator-helios-neo-16-ai-gaming-laptop-phn16-73-97fv"},
       {n:"Acer Chromebook 314", url:"https://store.acer.com/en-us/acer-chromebook-314-cboa314-2h-8878"},
       {n:"Nitro V 16 AI", url:"https://store.acer.com/en-us/nitro-v-16-ai-gaming-laptop-anv16-61-r2qy"}] },
   amex: { name:"American Express", domain:"americanexpress.com", url:"https://www.americanexpress.com/us/credit-cards/", ar:"1/1",
     src:"https://native-ads-dev.appless.workers.dev/f41m4u/ad.js", adConfig:'window.AD_CONFIG=window.AD_CONFIG||{};window.AD_CONFIG.dsp="house";window.AD_CONFIG.clickTracker={"mode":"exit","template":""};',
-    followers:"1,086,540 followers",
     variants:[
       {n:"Green Card", url:"https://www.americanexpress.com/us/credit-cards/card/green/"},
       {n:"Gold Card", url:"https://www.americanexpress.com/us/credit-cards/card/gold-card/"},
       {n:"Platinum Card", url:"https://www.americanexpress.com/us/credit-cards/card/platinum/"}] },
+  airbnb: { name:"Airbnb", domain:"airbnb.co.in", url:"https://www.airbnb.co.in/", ar:"4/3", dark:true, fontScan:true,
+    src:"https://native-ads.appless.workers.dev/6aa2aef14954ac6f0d9dcd05_ddladj/ad.js",
+    variants:[
+      {n:"Homes with a stunning view", url:"https://www.airbnb.co.in/"},
+      {n:"Homes close to the beach", url:"https://www.airbnb.co.in/"},
+      {n:"Homes with space to play", url:"https://www.airbnb.co.in/"}] },
   cross: { name:"Cross", domain:"cross.com", url:"https://cross.com/collections/ballpoint-pen", ar:"1/1", dark:true,
     src:"https://native-ads-dev.appless.workers.dev/6a9915fffac7a1784444e730_c3pgst/ad.js",
-    followers:"38,912 followers",
     variants:[
       {n:"Black", url:"https://cross.com/collections/ballpoint-pen"},
       {n:"Chrome", url:"https://cross.com/collections/ballpoint-pen"},
@@ -473,6 +487,7 @@ v.addEventListener("vertex-diff-change",function(e){var d=e.detail||{};t({type:"
 new MutationObserver(function(){var v=document.querySelector("vertex-player");if(v)hook(v)}).observe(document.documentElement,{childList:true,subtree:true});
 window.addEventListener("error",function(e){var s=e.target;if(s&&s.tagName==="SCRIPT")t({type:"error",msg:"Could not load "+s.src})},true);})();`;
   const cfg = b.adConfig ? `<script>${b.adConfig}<\/script>` : "";
+  const fonts = b.fontScan ? `<script>(function(){var seen={},head=document.head||document.documentElement,until=Date.now()+3e4;function add(css){if(seen[css])return;seen[css]=1;var s=document.createElement("style");s.setAttribute("data-vertex-fonts","");s.textContent=css;head.appendChild(s)}function scan(){try{var ps=document.getElementsByTagName("vertex-player");for(var i=0;i<ps.length;i++){var r=ps[i].shadowRoot;if(!r)continue;var n=r.querySelectorAll("style,link[rel=stylesheet]");for(var j=0;j<n.length;j++){var el=n[j];if(el.tagName==="LINK"){if(/fonts\\.googleapis\\.com/.test(el.href)&&!seen[el.href]){seen[el.href]=1;var l=document.createElement("link");l.rel="stylesheet";l.href=el.href;head.appendChild(l)}continue}var m=(el.textContent||"").match(/@font-face\\s*\\{[^}]*\\}/g);if(m)add(m.join(""))}}}catch(e){}if(Date.now()<until)setTimeout(scan,250)}scan()})();<\/script>` : "";
   const bg = b.dark ? "#0d0d0f" : "#e9e5df";
   return `<!doctype html>
 <meta charset=utf-8>
@@ -481,6 +496,7 @@ window.addEventListener("error",function(e){var s=e.target;if(s&&s.tagName==="SC
 <script>${bridge}<\/script>
 <script>var ExitApi=window.ExitApi||{exit:function(){}},clickTag="\${CLICK_URL_UNESC}";<\/script>
 ${cfg}
+${fonts}
 <script src=${b.src}><\/script>`;
 }
 
@@ -498,25 +514,23 @@ addEventListener("keydown", e=>{ if(e.key==="Escape"){ closeSheet(); closeLead()
 
 /* ---------- icons and avatars ---------- */
 const LOGO = (s=34) => `<svg class="logo" width="${s}" height="${s}" viewBox="0 0 34 34" aria-label="LinkedIn"><rect width="34" height="34" rx="4" fill="#0a66c2"/><path d="M8.6 13.4h3.7v12H8.6zM10.45 7.6a2.15 2.15 0 1 1 0 4.3 2.15 2.15 0 0 1 0-4.3M14.6 13.4h3.55v1.64h.05c.5-.94 1.7-1.94 3.52-1.94 3.76 0 4.45 2.47 4.45 5.69v6.61h-3.7v-5.86c0-1.4-.03-3.2-1.95-3.2-1.95 0-2.25 1.52-2.25 3.1v5.96H14.6z" fill="#fff"/></svg>`;
-function personSVG(o){ // simple illustrated portrait, fictional
-  const {bg="#c7d6e4",skin="#e3b48f",hair="#2d221c",shirt="#2f4a6b",style=0}=o||{};
-  const hairPath = style===1 ? `<path d="M30 40c0-14 8-22 20-22s21 8 21 22c0 6-1 10-3 14-1-9-5-15-18-15s-17 6-18 15c-2-4-2-8-2-14z" fill="${hair}"/>`
-                             : `<path d="M31 41c0-13 8-21 19-21s19 8 19 21c-3-6-9-9-19-9s-16 3-19 9z" fill="${hair}"/>`;
-  return `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="${bg}"/><path d="M16 100c2-20 16-30 34-30s32 10 34 30z" fill="${shirt}"/><rect x="43" y="56" width="14" height="16" rx="6" fill="${skin}"/><ellipse cx="50" cy="44" rx="17" ry="20" fill="${skin}"/>${hairPath}</svg>`;
-}
-const ME_AV = () => personSVG({bg:"#c9d5df",skin:"#d9a77f",hair:"#2a1f18",shirt:"#33465c"});
+const ME_AV = () => `<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(39).jpg" alt="Jordan Ellis" loading="lazy">`;
 const PEOPLE = {
-  maya:{n:"Maya Chen", h:"VP Product at Lumen Grid", av:()=>personSVG({bg:"#e2d6c8",skin:"#efc9a4",hair:"#1b1512",shirt:"#7a8d6b",style:1}), deg:"2nd"},
-  ava:{n:"Ava Morales", h:"Client gifting and events consultant | Creator", av:()=>personSVG({bg:"#d9cfe6",skin:"#c98e66",hair:"#3a2418",shirt:"#8a4f4f",style:1}), deg:"3rd+"},
-  priya:{n:"Priya Nair", h:"Product designer | Writing about calmer ways to work", av:()=>personSVG({bg:"#cfe3dc",skin:"#b97f58",hair:"#16110e",shirt:"#3e5a7a",style:1}), deg:"2nd"},
-  dan:{n:"Daniel Okafor", h:"Head of Revenue Operations at Fieldline", av:()=>personSVG({bg:"#d6dde8",skin:"#7b5038",hair:"#130e0b",shirt:"#4b4b52"}), deg:"1st"},
-  sam:{n:"Sam Whitaker", h:"Engineering Manager at Northwind Labs", av:()=>personSVG({bg:"#e6dcc8",skin:"#f0c8a8",hair:"#8a5a2b",shirt:"#2e5e4e"}), deg:"1st"},
-  lena:{n:"Lena Fischer", h:"Recruiter at Harbor & Co", av:()=>personSVG({bg:"#efd8d0",skin:"#f2cfb3",hair:"#b98a4a",shirt:"#59607a",style:1}), deg:"2nd"}
+  maya:{n:"Maya Chen", h:"VP Product at Lumen Grid", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(60).jpg" alt="Maya Chen" loading="lazy">`, deg:"2nd"},
+  ava:{n:"Ava Morales", h:"Client gifting and events consultant | Creator", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(55).jpg" alt="Ava Morales" loading="lazy">`, deg:"3rd+"},
+  priya:{n:"Priya Nair", h:"Product designer | Writing about calmer ways to work", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(51).jpg" alt="Priya Nair" loading="lazy">`, deg:"2nd"},
+  dan:{n:"Daniel Brooks", h:"Head of Revenue Operations at Fieldline", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(57).jpg" alt="Daniel Brooks" loading="lazy">`, deg:"1st"},
+  sam:{n:"Sam Whitaker", h:"Engineering Manager at Northwind Labs", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(5).jpg" alt="Sam Whitaker" loading="lazy">`, deg:"1st"},
+  lena:{n:"Lena Fischer", h:"Recruiter at Harbor & Co", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(10).jpg" alt="Lena Fischer" loading="lazy">`, deg:"2nd"}
 };
+const UNS_CREATOR = "https://images.unsplash.com/photo-1555383004-514c5437ec87?w=700&q=80&auto=format&fit=crop";
+const UNS_HIRE = "https://images.unsplash.com/photo-1563714272638-882a6309ba7d?w=900&q=80&auto=format&fit=crop";
 const LG = {
-  acer:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#fff"/><rect x=".5" y=".5" width="47" height="47" fill="none" stroke="#e6e6e6"/><text x="24" y="29" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="15" font-style="italic" font-weight="700" fill="#83b81a">acer</text></svg>`,
-  amex:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#006fcf"/><text x="24" y="21" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="7.4" font-weight="800" fill="#fff" letter-spacing=".2">AMERICAN</text><text x="24" y="31" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="7.4" font-weight="800" fill="#fff" letter-spacing=".2">EXPRESS</text></svg>`,
-  cross:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#111"/><text x="24" y="28" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="10" fill="#fff" letter-spacing="2">CROSS</text></svg>`,
+  acer:`<svg viewBox="0 0 48 48" width="100%" height="100%" aria-label="Acer"><rect width="48" height="48" fill="#fff"/><g transform="translate(5 5) scale(1.583)"><path d="M23.943 9.364c-.085-.113-.17-.198-.595-.226-.113 0-.453-.029-1.048-.029-1.56 0-2.636.482-3.175 1.417.142-.935-.765-1.417-2.749-1.417-2.324 0-3.798.935-4.393 2.834-.226.709-.226 1.276-.056 1.73h-.567c-.425.027-.992.056-1.36.056-.85 0-1.39-.142-1.588-.425-.17-.255-.17-.737.057-1.446.368-1.162 1.247-1.672 2.664-1.672.737 0 1.445.085 1.445.085.085 0 .142-.113.142-.198l-.028-.085-.057-.397c-.028-.255-.227-.397-.567-.453-.311-.029-.567-.029-.907-.029h-.028c-1.842 0-3.146.624-3.854 1.814.255-1.219-.596-1.814-2.551-1.814-1.105 0-1.9.029-2.353.085-.368.057-.595.199-.68.454l-.17.51c-.028.085.029.142.142.142.085 0 .425-.057.992-.086a24.816 24.816 0 0 1 1.672-.085c1.077 0 1.559.284 1.389.822-.029.114-.114.199-.255.227-1.02.17-1.842.284-2.438.369-1.7.226-2.692.736-2.947 1.587-.369 1.162.538 1.728 2.72 1.728 1.078 0 2.013-.056 2.75-.198.425-.085.652-.17.737-.453l.396-1.304c-.028 1.304.85 1.955 2.721 1.955.794 0 1.559-.028 1.927-.085.369-.056.567-.141.652-.425l.085-.396c.397.623 1.276.935 2.608.935 1.417 0 2.239-.029 2.465-.114a.523.523 0 0 0 .369-.311l.028-.085.17-.539c.029-.085-.028-.142-.142-.142l-.906.057c-.596.029-1.077.057-1.418.057-.651 0-1.076-.057-1.332-.142-.368-.142-.538-.397-.51-.822l2.863-.368c1.275-.17 2.154-.567 2.579-1.19l-.992 3.315c-.028.057 0 .114.028.142.029.028.085.057.199.057h1.19c.198 0 .283-.114.312-.199l1.048-3.656c.142-.481.567-.708 1.36-.708.71 0 1.22 0 1.56.028h.028c.057 0 .17-.028.255-.17l.17-.51c0-.085 0-.17-.057-.227zM4.841 13.73c-.368.057-.907.085-1.587.085-1.219 0-1.729-.255-1.587-.737.113-.34.425-.567.935-.624l2.75-.368zm12.669-2.95c-.114.369-.652.624-1.616.766l-2.295.311.056-.198c.199-.624.454-1.02.794-1.247.34-.227.907-.34 1.7-.34 1.05.028 1.503.255 1.36.708Z" fill="#83b81a"/></g></svg>`,
+  amex:`<svg viewBox="0 0 24 24" width="100%" height="100%" aria-label="American Express"><rect width="24" height="24" fill="#fff"/><path d="M16.015 14.378c0-.32-.135-.496-.344-.622-.21-.12-.464-.135-.81-.135h-1.543v2.82h.675v-1.027h.72c.24 0 .39.024.478.125.12.13.104.38.104.55v.35h.66v-.555c-.002-.25-.017-.376-.108-.516-.06-.08-.18-.18-.33-.234l.02-.008c.18-.072.48-.297.48-.747zm-.87.407l-.028-.002c-.09.053-.195.058-.33.058h-.81v-.63h.824c.12 0 .24 0 .33.05.098.048.156.147.15.255 0 .12-.045.215-.134.27zM20.297 15.837H19v.6h1.304c.676 0 1.05-.278 1.05-.884 0-.28-.066-.448-.187-.582-.153-.133-.392-.193-.73-.207l-.376-.015c-.104 0-.18 0-.255-.03-.09-.03-.15-.105-.15-.21 0-.09.017-.166.09-.21.083-.046.177-.066.272-.06h1.23v-.602h-1.35c-.704 0-.958.437-.958.84 0 .9.776.855 1.407.87.104 0 .18.015.225.06.046.03.082.106.082.18 0 .077-.035.15-.08.18-.06.053-.15.07-.277.07zM0 0v10.096L.81 8.22h1.75l.225.464V8.22h2.043l.45 1.02.437-1.013h6.502c.295 0 .56.057.756.236v-.23h1.787v.23c.307-.17.686-.23 1.12-.23h2.606l.24.466v-.466h1.918l.254.465v-.466h1.858v3.948H20.87l-.36-.6v.585h-2.353l-.256-.63h-.583l-.27.614h-1.213c-.48 0-.84-.104-1.08-.24v.24h-2.89v-.884c0-.12-.03-.12-.105-.135h-.105v1.036H6.067v-.48l-.21.48H4.69l-.202-.48v.465H2.235l-.256-.624H1.4l-.256.624H0V24h23.786v-7.108c-.27.135-.613.18-.973.18H21.09v-.255c-.21.165-.57.255-.914.255H14.71v-.9c0-.12-.018-.12-.12-.12h-.075v1.022h-1.8v-1.066c-.298.136-.643.15-.928.136h-.214v.915h-2.18l-.54-.617-.57.6H4.742v-3.93h3.61l.518.602.554-.6h2.412c.28 0 .74.03.942.225v-.24h2.177c.202 0 .644.045.903.225v-.24h3.265v.24c.163-.164.508-.24.803-.24h1.89v.24c.194-.15.464-.24.84-.24h1.176V0H0zM21.156 14.955c.004.005.006.012.01.016.01.01.024.01.032.02l-.042-.035zM23.828 13.082h.065v.555h-.065zM23.865 15.03v-.005c-.03-.025-.046-.048-.075-.07-.15-.153-.39-.215-.764-.225l-.36-.012c-.12 0-.194-.007-.27-.03-.09-.03-.15-.105-.15-.21 0-.09.03-.16.09-.204.076-.045.15-.05.27-.05h1.223v-.588h-1.283c-.69 0-.96.437-.96.84 0 .9.78.855 1.41.87.104 0 .18.015.224.06.046.03.076.106.076.18 0 .07-.034.138-.09.18-.045.056-.136.07-.27.07h-1.288v.605h1.287c.42 0 .734-.118.9-.36h.03c.09-.134.135-.3.135-.523 0-.24-.045-.39-.135-.526zM18.597 14.208v-.583h-2.235V16.458h2.235v-.585h-1.57v-.57h1.533v-.584h-1.532v-.51M13.51 8.787h.685V11.6h-.684zM13.126 9.543l-.007.006c0-.314-.13-.5-.34-.624-.217-.125-.47-.135-.81-.135H10.43v2.82h.674v-1.034h.72c.24 0 .39.03.487.12.122.136.107.378.107.548v.354h.677v-.553c0-.25-.016-.375-.11-.516-.09-.107-.202-.19-.33-.237.172-.07.472-.3.472-.75zm-.855.396h-.015c-.09.054-.195.056-.33.056H11.1v-.623h.825c.12 0 .24.004.33.05.09.04.15.128.15.25s-.047.22-.134.266zM15.92 9.373h.632v-.6h-.644c-.464 0-.804.105-1.02.33-.286.3-.362.69-.362 1.11 0 .512.123.833.36 1.074.232.238.645.31.97.31h.78l.255-.627h1.39l.262.627h1.36v-2.11l1.272 2.11h.95l.002.002V8.786h-.684v1.963l-1.18-1.96h-1.02V11.4L18.11 8.744h-1.004l-.943 2.22h-.3c-.177 0-.362-.03-.468-.134-.125-.15-.186-.36-.186-.662 0-.285.08-.51.194-.63.133-.135.272-.165.516-.165zm1.668-.108l.464 1.118v.002h-.93l.466-1.12zM2.38 10.97l.254.628H4V9.393l.972 2.205h.584l.973-2.202.015 2.202h.69v-2.81H6.118l-.807 1.904-.876-1.905H3.343v2.663L2.205 8.787h-.997L.01 11.597h.72l.26-.626h1.39zm-.688-1.705l.46 1.118-.003.002h-.915l.457-1.12zM11.856 13.62H9.714l-.85.923-.825-.922H5.346v2.82H8l.855-.932.824.93h1.302v-.94h.838c.6 0 1.17-.164 1.17-.945l-.006-.003c0-.78-.598-.93-1.128-.93zM7.67 15.853l-.014-.002H6.02v-.557h1.47v-.574H6.02v-.51H7.7l.733.82-.764.824zm2.642.33l-1.03-1.147 1.03-1.108v2.253zm1.553-1.258h-.885v-.717h.885c.24 0 .42.098.42.344 0 .243-.15.372-.42.372zM9.967 9.373v-.586H7.73V11.6h2.237v-.58H8.4v-.564h1.527V9.88H8.4v-.507" fill="#006fcf"/></svg>`,
+  airbnb:`<svg viewBox="0 0 48 48" width="100%" height="100%" aria-label="Airbnb"><rect width="48" height="48" fill="#fff"/><g transform="translate(10 10) scale(1.167)"><path d="M12.001 18.275c-1.353-1.697-2.148-3.184-2.413-4.457-.263-1.027-.16-1.848.291-2.465.477-.71 1.188-1.056 2.121-1.056s1.643.345 2.12 1.063c.446.61.558 1.432.286 2.465-.291 1.298-1.085 2.785-2.412 4.458zm9.601 1.14c-.185 1.246-1.034 2.28-2.2 2.783-2.253.98-4.483-.583-6.392-2.704 3.157-3.951 3.74-7.028 2.385-9.018-.795-1.14-1.933-1.695-3.394-1.695-2.944 0-4.563 2.49-3.927 5.382.37 1.565 1.352 3.343 2.917 5.332-.98 1.085-1.91 1.856-2.732 2.333-.636.344-1.245.558-1.828.609-2.679.399-4.778-2.2-3.825-4.88.132-.345.395-.98.845-1.961l.025-.053c1.464-3.178 3.242-6.79 5.285-10.795l.053-.132.58-1.116c.45-.822.635-1.19 1.351-1.643.346-.21.77-.315 1.246-.315.954 0 1.698.558 2.016 1.007.158.239.345.557.582.953l.558 1.089.08.159c2.041 4.004 3.821 7.608 5.279 10.794l.026.025.533 1.22.318.764c.243.613.294 1.222.213 1.858zm1.22-2.39c-.186-.583-.505-1.271-.9-2.094v-.03c-1.889-4.006-3.642-7.608-5.307-10.844l-.111-.163C15.317 1.461 14.468 0 12.001 0c-2.44 0-3.476 1.695-4.535 3.898l-.081.16c-1.669 3.236-3.421 6.843-5.303 10.847v.053l-.559 1.22c-.21.504-.317.768-.345.847C-.172 20.74 2.611 24 5.98 24c.027 0 .132 0 .265-.027h.372c1.75-.213 3.554-1.325 5.384-3.317 1.829 1.989 3.635 3.104 5.382 3.317h.372c.133.027.239.027.265.027 3.37.003 6.152-3.261 4.802-6.975z" fill="#ff385c"/></g></svg>`,
+  cross:`<span style="display:grid;place-items:center;width:100%;height:100%;background:#fff"><img src="https://cross.com/cdn/shop/files/Cross_Secondary_Logo_Horizontal_Black_1_color.png?v=1714793782&width=300" alt="Cross" style="width:86%;display:block"></span>`,
+  lumen:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" rx="8" fill="#0f3d3e"/><circle cx="24" cy="24" r="11" fill="none" stroke="#7ee0c3" stroke-width="4"/><path d="M24 9v6M24 33v6M9 24h6M33 24h6" stroke="#7ee0c3" stroke-width="4" stroke-linecap="round"/></svg>`,
   northwind:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#0e5e6f"/><path d="M14 34V14l20 20V14" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg>`,
   news:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#915907"/><path d="M14 13h16l4 4v18H14z" fill="#fff"/><path d="M18 21h12M18 26h12M18 31h8" stroke="#915907" stroke-width="2"/></svg>`
 };
@@ -566,7 +580,8 @@ function navHTML(active){
       <span class="gsep"></span>
       <a class="gi" href="#/feed">${IC.grid}<span class="caret">For Business${IC.caret}</span></a>
       <a class="gi" href="#/feed">${IC.adv}<span>Advertise</span></a>
-    </nav></div>`;
+    </nav></div>
+    <div class="gnav-m"><a class="mav" href="#/feed" aria-label="Me">${ME_AV()}</a><label class="msrch">${IC.search}<input placeholder="Search" aria-label="Search"></label><a class="mmsg" href="#/messaging" aria-label="Messaging">${IC.msg}<span class="bdg">1</span></a></div>`;
 }
 
 /* ================= Flick slots ================= */
@@ -653,17 +668,41 @@ function actions(n){
 }
 function promotedHead(brand){
   const b=BRANDS[brand];
-  return `<div class="phead"><span class="lg">${LG[brand]}</span><div class="meta"><div class="n">${b.name}</div><div class="s">${b.followers}</div><div class="s">Promoted</div></div>
+  return `<div class="phead"><span class="lg">${LG[brand]}</span><div class="meta"><div class="n">${b.name}</div><div class="s">Promoted</div></div>
     <div class="r"><button class="follow">+ Follow</button><button class="icb" aria-label="Ad options">${DOTS}</button></div></div>`;
 }
 function hbar(slot, brand, headPre, cta){
   return `<div class="hbar"><div class="t"><b>${headPre}<span data-vname="${slot}">${BRANDS[brand].variants[0].n}</span></b><span>${BRANDS[brand].domain}</span></div><button class="cta" onclick="shop('${slot}')">${cta}</button></div>`;
 }
-function organic(p, time, text, n, ctx){
+function organic(p, time, text, n, ctx, media){
   const P=PEOPLE[p];
   return `<article class="card post">${ctx?`<div class="ctxline"><span class="sm">${PEOPLE[ctx[0]].av()}</span><span><b>${PEOPLE[ctx[0]].n}</b> ${ctx[1]}</span><span class="x">${DOTS}${XI}</span></div>`:""}
     <div class="phead"><span class="lg round">${P.av()}</span><div class="meta"><div class="n">${P.n} <small>· ${P.deg}</small></div><div class="s">${P.h}</div><div class="s">${time} · ${GLOBE}</div></div><div class="r"><button class="icb">${DOTS}</button>${ctx?"":`<button class="icb">${XI}</button>`}</div></div>
-    <div class="ptext">${text}</div>${actions(n)}</article>`;
+    <div class="ptext">${text}</div>${media||""}${actions(n)}</article>`;
+}
+
+/* ---------- images posted by members ---------- */
+function chartImg(){
+  const q=[["Q1",62,48],["Q2",66,51],["Q3",71,39]]; const max=80, H=130, x0=70;
+  const bars=q.map((r,i)=>{const x=x0+i*150; const h1=r[1]/max*H, h2=r[2]/max*H;
+    return `<rect x="${x}" y="${230-h1}" width="44" height="${h1}" rx="4" fill="#1f6feb"/><rect x="${x+50}" y="${230-h2}" width="44" height="${h2}" rx="4" fill="#f0883e"/>
+    <text x="${x+22}" y="${222-h1}" text-anchor="middle" font-size="13" font-weight="700" fill="#1f6feb">$${r[1]}K</text><text x="${x+72}" y="${222-h2}" text-anchor="middle" font-size="13" font-weight="700" fill="#c4621f">${r[2]}%</text>
+    <text x="${x+47}" y="252" text-anchor="middle" font-size="14" fill="#444">${r[0]}</text>`}).join("");
+  return `<div class="pimg"><svg viewBox="0 0 555 300" width="100%" style="display:block;background:#fbfaf7;font-family:var(--li-font)">
+    <text x="28" y="40" font-size="19" font-weight="700" fill="#1b1f23">Four-day sprints: what changed in 2026</text>
+    <text x="28" y="62" font-size="13" fill="#666">Fieldline sales team, 42 reps</text>
+    <rect x="28" y="76" width="12" height="12" rx="2" fill="#1f6feb"/><text x="46" y="87" font-size="12" fill="#444">Pipeline per rep</text>
+    <rect x="170" y="76" width="12" height="12" rx="2" fill="#f0883e"/><text x="188" y="87" font-size="12" fill="#444">Reps reporting burnout</text>
+    <line x1="50" y1="230" x2="520" y2="230" stroke="#ddd"/>${bars}
+    <text x="28" y="284" font-size="11" fill="#999">Sprint cadence changed at the start of Q3</text></svg></div>`;
+}
+function hiringImg(){
+  return `<div class="pimg hire"><div class="hire-in">
+    <span class="hl">${LG.lumen}</span><span class="tag2">WE'RE HIRING</span>
+    <b>Senior Product Designer</b><span class="sub">2 roles · Grid analytics</span>
+    <span class="chips2"><i>Remote, US</i><i>Full-time</i><i>$160K to $195K</i></span>
+    <span class="apply">Apply on LinkedIn</span></div>
+    <img src="${UNS_HIRE}" alt="" loading="lazy"></div>`;
 }
 
 /* ---------- Desktop feed ---------- */
@@ -678,11 +717,13 @@ function renderFeed(){
     <div class="card lbox"><h4>Analytics <span>›</span></h4><div class="stat" style="margin-top:6px"><span>Profile viewers</span><b>214</b></div><div class="stat"><span>Post impressions</span><b>1,086</b></div></div>
     <div class="card lbox"><div class="lnk">${IC.book}Saved items</div><div class="lnk">${IC.grp}Groups</div><div class="lnk">${IC.ev}Events</div></div>`;
 
-  const acerV = `<article class="card post" data-anchor="feed-acer">${promotedHead("acer")}
-    <div class="ptext">Three laptops, one video. Tap a model to see it in action, then pick the one that fits how your team works.</div>
-    <div class="vwrap">${flick("feed-acer","acer")}</div>
-    ${hbar("feed-acer","acer","","Buy now")}
-    ${actions(["1,284","96","41"])}</article>`;
+  const airbnb = `<article class="card post" data-anchor="feed-airbnb">${promotedHead("airbnb")}
+    <div class="ptext">Your out-of-office is set. Now pick where you'll read the replies from.
+
+Take a break from work and explore the world. Tap a home to look inside.</div>
+    ${flick("feed-airbnb","airbnb")}
+    ${hbar("feed-airbnb","airbnb","","Learn more")}
+    ${actions(["4,861","312","207"])}</article>`;
 
   const amexSq = `<article class="card post" data-anchor="feed-amex">${promotedHead("amex")}
     <div class="ptext">Green, Gold or Platinum. Tap a card to see where it fits your week, from coffee runs to the airport lounge.</div>
@@ -710,11 +751,11 @@ Tap through the three finishes below and tell me which one your clients would ke
     <div class="card share"><div class="row"><span class="sav">${ME_AV()}</span><button class="inp">Start a post</button></div>
       <div class="acts"><span>${IC.video}Video</span><span>${IC.photo}Photo</span><span>${IC.article}Write article</span></div></div>
     <div class="sortby"><hr><span>Sort by: <b>Top</b> ▾</span></div>
-    ${organic("dan","3h","We moved our whole sales team to a four-day sprint cadence in Q3. Pipeline held, burnout dropped. Two things I would do differently next time…  <span class=\"more\">…more</span>",["418","37","9"])}
-    ${acerV}
-    ${organic("maya","5h","Hiring: two senior product designers for our grid analytics team. Remote across the US. If you like hard problems with real-world impact, my DMs are open.",["1,106","84","63"],["sam","likes this"])}
-    ${crossTLA}
+    ${organic("dan","3h","We moved our whole sales team to a four-day sprint cadence in Q3. Pipeline held, burnout dropped. Two things I would do differently next time…  <span class=\"more\">…more</span>",["418","37","9"],null,chartImg())}
     ${amexSq}
+    ${organic("maya","5h","Hiring: two senior product designers for our grid analytics team. Remote across the US. If you like hard problems with real-world impact, my DMs are open. <span class=\"tag\">#hiring</span>",["1,106","84","63"],["sam","likes this"],hiringImg())}
+    ${crossTLA}
+    ${airbnb}
     ${instream}
     ${organic("lena","8h","Quick reminder for anyone job hunting this month: a short note to the hiring manager after you apply still works. Keep it to three lines.",["2,311","156","120"],["dan","commented on this"])}`;
 
@@ -763,7 +804,7 @@ function skipPreroll(){
   clearInterval(IS.t); IS.done=true;
   const host=document.querySelector('.flick[data-slot="is-acer"]'); if(host) unmount(host);
   delete SLOTS["is-acer"];
-  document.getElementById("istream").innerHTML = `<div class="creatorvid"><button class="again" onclick="replayPreroll()">Replay ad</button><div class="play"><span>${IC.play}</span></div><h5>3 habits that cut my meetings in half</h5><small>Priya Nair · creator video plays here</small></div>`;
+  document.getElementById("istream").innerHTML = `<div class="creatorvid" style="background-image:linear-gradient(180deg,rgba(0,0,0,.05) 40%,rgba(0,0,0,.7)),url('${UNS_CREATOR}')"><button class="again" onclick="replayPreroll()">Replay ad</button><div class="play"><span>${IC.play}</span></div><h5>3 habits that cut my meetings in half</h5><small>1:42 · ${PEOPLE.priya.n}</small></div>`;
 }
 function replayPreroll(){
   IS.done=false;
@@ -829,7 +870,7 @@ function threadRows(where){
     {t:"acer", lg:LG.acer, sq:true, n:"Acer for Business", p:"Sponsored · Refreshing laptops for your team?", d:"Nov 2", unread:true},
     {t:"cross", lg:LG.cross, sq:true, n:"Cross", p:"Sponsored · Gifts your clients will keep", d:"Nov 1"},
     {t:"sam", lg:PEOPLE.sam.av(), n:"Sam Whitaker", p:"Sam: Works for me, see you at 10", d:"Oct 31"},
-    {t:"dan", lg:PEOPLE.dan.av(), n:"Daniel Okafor", p:"You: Thanks, will send the deck today", d:"Oct 30"},
+    {t:"dan", lg:PEOPLE.dan.av(), n:"Daniel Brooks", p:"You: Thanks, will send the deck today", d:"Oct 30"},
     {t:"lena", lg:PEOPLE.lena.av(), n:"Lena Fischer", p:"Lena: Are you open to a quick chat about a…", d:"Oct 28"}];
   return T.map(r=>`<button class="thr ${r.unread?"unread":""}" data-t="${r.t}" onclick="${where==="dock" ? (r.t==="acer"?"openConvo()":(r.t==="cross"?"location.hash='#/messaging/cross'":"toast('Only the sponsored threads are live in this demo')")) : `pickThread('${r.t}')`}">
       <span class="tav ${r.sq?"sq":""}">${r.lg}</span><span class="tt"><span class="row"><b>${r.n}</b><small>${r.d}</small></span><p>${r.p}</p></span></button>`).join("");
@@ -864,17 +905,18 @@ function submitLead(){
 let CUR_THREAD="cross";
 function renderMessaging(t){
   SLOTS={}; CUR_THREAD=t||"cross";
+  document.querySelector(".mbox").classList.toggle("open", !!t);
   document.getElementById("nav-msg").innerHTML = navHTML("msg");
   document.getElementById("mlist").innerHTML = threadRows("page");
-  document.querySelectorAll("#mlist .thr").forEach(el=>el.classList.toggle("cur", el.dataset.t===CUR_THREAD));
+  document.querySelectorAll("#mlist .thr").forEach(el=>el.classList.toggle("cur", el.dataset.t===CUR_THREAD && (!!t || !matchMedia("(max-width:768px)").matches)));
   const rail = document.getElementById("mrail");
   if(CUR_THREAD==="acer"){
     document.querySelector("#mlist .thr[data-t='acer']")?.classList.remove("unread");
-    document.getElementById("mrh").innerHTML = `<span style="width:32px;height:32px;border-radius:4px;overflow:hidden">${LG.acer}</span><b>Acer for Business</b><span class="icb">${DOTS}</span>`;
+    document.getElementById("mrh").innerHTML = `<a class="mback icb" href="#/messaging" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></a><span style="width:32px;height:32px;border-radius:4px;overflow:hidden">${LG.acer}</span><b>Acer for Business</b><span class="icb">${DOTS}</span>`;
     document.getElementById("mthread").innerHTML = `<div data-anchor="msg-acer">${convoStart("page-acer")}</div>`;
     rail.innerHTML = railGeneric();
   } else {
-    document.getElementById("mrh").innerHTML = `<span style="width:32px;height:32px;border-radius:4px;overflow:hidden">${LG.cross}</span><b>Cross</b><span class="icb">${DOTS}</span>`;
+    document.getElementById("mrh").innerHTML = `<a class="mback icb" href="#/messaging" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></a><span style="width:32px;height:32px;border-radius:4px;overflow:hidden">${LG.cross}</span><b>Cross</b><span class="icb">${DOTS}</span>`;
     document.getElementById("mthread").innerHTML = `
       <div class="spbar"><span>Sponsored</span><span>Nov 1</span></div>
       <div class="who"><span class="lg" style="display:block">${LG.cross}</span><b>Cross</b></div>
@@ -883,7 +925,7 @@ function renderMessaging(t){
         <p><b>Gifts your clients will keep</b></p>
         <p>Hi ${ME.first},</p>
         <p>Year-end is when clients remember who thought of them. A Cross ballpoint pen is a gift that stays on the desk long after the holidays.</p>
-        <p>Choose from black, chrome or gold. The video on the right lets you see each finish up close.</p>
+        <p>Choose from black, chrome or gold, each made to be used every day and kept for years.</p>
         <p>Best,<br>The Cross team</p>
         <button class="msgcta" onclick="shop('comp-cross')">Shop ballpoint pens</button></div></div>`;
     rail.innerHTML = `<div class="card compan" data-anchor="msg-cross"><div class="top"><span>Ad</span>${DOTS}</div>${flick("comp-cross","cross")}
@@ -902,59 +944,25 @@ function pickThread(t){
   toast("Only the sponsored threads are live in this demo");
 }
 
-/* ---------- Mobile ---------- */
-function renderMobile(){
-  SLOTS={};
-  document.getElementById("mhdr").innerHTML = `<a href="#/feed" aria-label="LinkedIn">${LOGO(30)}</a>${IC.search}<span class="sp"></span>${IC.more}<span class="ma">${ME_AV()}</span><span style="color:var(--t2)">${DOTS}</span>`;
-  document.getElementById("mnavb").innerHTML = `<span class="on">${IC.home}Home</span><span>${IC.net}My Network</span><span><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21 13h-8v8h-2v-8H3v-2h8V3h2v8h8z"/></svg>Post</span><span>${IC.bell}Notifications</span><span>${IC.jobs}Jobs</span>`;
-  document.getElementById("mfeed").innerHTML = `
-    <article class="card post" data-anchor="m-amex">${promotedHead("amex")}
-      <div class="ptext">Green, Gold or Platinum. Tap a card to see where it fits your week.</div>
-      ${flick("m-amex","amex")}${hbar("m-amex","amex","American Express® ","Learn more")}
-      <div class="social"><span class="rx">${RX}&nbsp;2,017</span><span>143 comments</span></div>
-      <div class="pact"><button>${IC.like}<span>Like</span></button><button>${IC.cmt}<span>Comment</span></button><button>${IC.rep}<span>Repost</span></button><button>${IC.send}<span>Send</span></button></div></article>
-    ${organic("dan","3h","We moved our whole sales team to a four-day sprint cadence in Q3. Pipeline held, burnout dropped.  <span class=\"more\">…more</span>",["418","37","9"])}
-    <article class="card post" data-anchor="m-acer">${promotedHead("acer")}
-      <div class="ptext">Three laptops, one video. Tap a model to see it in action.</div>
-      <div class="vwrap">${flick("m-acer","acer")}</div>${hbar("m-acer","acer","","Buy now")}
-      <div class="social"><span class="rx">${RX}&nbsp;1,284</span><span>96 comments</span></div>
-      <div class="pact"><button>${IC.like}<span>Like</span></button><button>${IC.cmt}<span>Comment</span></button><button>${IC.rep}<span>Repost</span></button><button>${IC.send}<span>Send</span></button></div></article>
-    <article class="card post" data-anchor="m-cross">
-      <div class="phead"><span class="lg round">${PEOPLE.ava.av()}</span><div class="meta"><div class="n">${PEOPLE.ava.n} <small>· 3rd+</small></div><div class="s">${PEOPLE.ava.h}</div><div class="s">Promoted by Cross</div></div><div class="r"><button class="follow">+ Follow</button></div></div>
-      <div class="ptext">Black, chrome or gold? Tap through and tell me which one your clients would keep on their desk.</div>
-      ${flick("m-cross","cross")}
-      <div class="social"><span class="rx">${RX}&nbsp;642</span><span>58 comments</span></div>
-      <div class="pact"><button>${IC.like}<span>Like</span></button><button>${IC.cmt}<span>Comment</span></button><button>${IC.rep}<span>Repost</span></button><button>${IC.send}<span>Send</span></button></div></article>`;
-  document.getElementById("mfeed").scrollTop=0;
-  // mobile feed scrolls inside the phone: watch that scroller too
-  document.getElementById("mfeed").onscroll = ()=>mountVisible();
-  observeFlicks();
-}
-
 /* =====================================================================
    Ad selector
    ===================================================================== */
-const GUIDE = [
-  ["Feed, desktop", [
-    ["Video ad, vertical","#/feed","feed-acer","Acer"],
-    ["Thought Leader ad","#/feed","feed-cross","Cross"],
-    ["Video ad, square","#/feed","feed-amex","Amex"],
-    ["In-stream pre-roll on a creator video","#/feed","feed-instream","Acer"],
-    ["Spotlight ad, right rail","#/feed","spot-amex","Amex"],
-    ["Conversation ad in the messaging window","#/feed","@convo","Acer"]]],
-  ["Messaging", [
-    ["Message ad with companion banner","#/messaging/cross","msg-cross","Cross"],
-    ["Conversation ad with lead gen form","#/messaging/acer","msg-acer","Acer"]]],
-  ["Mobile app", [
-    ["Video ad, square","#/mobile","m-amex","Amex"],
-    ["Video ad, vertical","#/mobile","m-acer","Acer"],
-    ["Thought Leader ad","#/mobile","m-cross","Cross"]]]
+const GUIDE = [  // [format, route, anchor, brand, desktop only]
+  ["Video ad","#/feed","feed-amex","Amex"],
+  ["Conversation ad with Lead Gen Form","#/feed","@convo","Acer"],
+  ["In-stream video ad","#/feed","feed-instream","Acer"],
+  ["Single image ad","#/feed","feed-airbnb","Airbnb"],
+  ["Thought Leader ad","#/feed","feed-cross","Cross"],
+  ["Spotlight ad","#/feed","spot-amex","Amex",true],
+  ["Message ad with companion banner","#/messaging/cross","msg-cross","Cross",true]
 ];
+const PHONE = matchMedia("(max-width:1100px)");  // right rail (Spotlight, companion banner) only shows on wide screens
 function renderGuide(){
-  let n=0;
-  document.getElementById("gpanel").innerHTML = GUIDE.map(([g,items])=>`<h6>${g}</h6>`+items.map(([t,h,a,b])=>`<button class="gitem" data-h="${h}" onclick="jump('${h}','${a}')"><span class="n">${++n}</span>${t}<span class="b">${b}</span></button>`).join("")).join("");
-  document.getElementById("gcount").textContent=n;
+  const items = GUIDE.filter(g=>!(g[4] && PHONE.matches));
+  document.getElementById("gpanel").innerHTML = items.map(([t,h,a,b],i)=>`<button class="gitem" data-h="${h}" data-a="${a}" onclick="jump('${h}','${a}')"><span class="n">${i+1}</span>${t}<span class="b">${b}</span></button>`).join("");
+  document.getElementById("gcount").textContent=items.length;
 }
+PHONE.addEventListener("change", renderGuide);
 function toggleGuide(force){
   const p=document.getElementById("gpanel"), on = typeof force==="boolean" ? force : !p.classList.contains("on");
   p.classList.toggle("on",on); document.getElementById("gscrim").classList.toggle("on",on);
@@ -981,16 +989,20 @@ function focusAnchor(){
 /* =====================================================================
    Router
    ===================================================================== */
+function renderTabs(path){
+  const t=(k,label,icon,href)=>`<a class="${path.startsWith(k)?"on":""}" href="${href||"#"}" ${href?"":`onclick="toast('Only the feed and messaging are live in this demo');return false"`}>${icon}<span>${label}</span></a>`;
+  document.getElementById("mtab").innerHTML = t("/feed","Home",IC.home,"#/feed")+t("/net","My Network",IC.net)+t("/post","Post",`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21 13h-8v8h-2v-8H3v-2h8V3h2v8h8z"/></svg>`)+t("/bell","Notifications",IC.bell)+t("/jobs","Jobs",IC.jobs);
+}
 function route(){
   const h=location.hash||"#/feed";
   const path=h.slice(1);
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
-  document.querySelectorAll(".gitem").forEach(el=>el.classList.toggle("cur", el.dataset.h==="#"+path));
+  document.querySelectorAll(".gitem").forEach(el=>el.classList.toggle("cur", el.dataset.h==="#"+path && el.dataset.a!=="@convo"));
   if(document.getElementById("cwin").classList.contains("on")) closeConvo();
   closeLead(); closeSheet();
   document.body.classList.toggle("no-dock", !path.startsWith("/feed"));
+  renderTabs(path.startsWith("/messaging")?"/msg":"/feed");
   if(path.startsWith("/messaging")){ document.getElementById("v-msg").classList.add("on"); renderMessaging(path.split("/")[2]); scrollTo(0,0); }
-  else if(path==="/mobile"){ document.getElementById("v-mobile").classList.add("on"); renderMobile(); scrollTo(0,0); }
   else { document.getElementById("v-feed").classList.add("on"); renderFeed(); scrollTo(0,0); }
   focusAnchor();
 }
