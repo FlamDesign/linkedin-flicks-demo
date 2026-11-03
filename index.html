@@ -971,6 +971,7 @@ function toggleGuide(force){
 let pendingAnchor=null;
 function jump(h,a){
   toggleGuide(false); pendingAnchor=a;
+  if(a!=="@convo" && document.getElementById("cwin").classList.contains("on")) closeConvo();
   if(location.hash===h) focusAnchor(); else location.hash=h;
 }
 function focusAnchor(){
