@@ -23,7 +23,7 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- Flick slot ---------- */
 .flick{position:relative;overflow:hidden;background:#e9e5df;width:100%;aspect-ratio:var(--ar,1/1)}
-.flick iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.flick iframe{position:absolute;left:0;top:0;border:0;display:block;transform-origin:0 0;max-width:none}
 .fstate{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;transition:opacity .4s;background:inherit}
 .fstate.hide{opacity:0}
 .fstate.load::after{content:"";width:26px;height:26px;border-radius:50%;border:3px solid rgba(0,0,0,.12);border-top-color:var(--blue);animation:spin .9s linear infinite}
@@ -344,6 +344,8 @@ a{color:inherit;text-decoration:none}
   .dock{display:none}
   .cwin{inset:0;width:auto;height:auto;border-radius:0;z-index:70}
   .chips{padding-left:16px}
+  .cmsg .mf{width:min(240px,100%)}
+  .cwin .wh{position:sticky;top:0;background:#fff;z-index:1}
   .mlay{display:block;padding:0}
   .mbox{display:block;height:calc(100vh - 108px);min-height:0;border-radius:0;box-shadow:none}
   .mbox .mleft{display:flex;height:100%;border-right:0}
@@ -351,8 +353,11 @@ a{color:inherit;text-decoration:none}
   .mbox.open .mleft{display:none}
   .mbox.open .mright{display:flex}
   .mback{display:grid}
-  .gpill,.no-dock .gpill{right:12px;bottom:68px}
-  .gpanel,.no-dock .gpanel{right:12px;left:12px;width:auto;bottom:116px}
+  .gpill{display:none}
+  .gpanel,.no-dock .gpanel{position:fixed;top:58px;bottom:auto;right:8px;left:8px;width:auto;max-height:calc(100vh - 130px);z-index:80}
+  .gscrim{z-index:79}
+  .gnav-m .mads{flex:none;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:999px;background:#1b1f23;color:#fff;font-weight:600;font-size:12px}
+  .gnav-m .mads i{font-style:normal;background:var(--blue);border-radius:999px;font-size:10px;padding:0 6px}
   .ctxline{padding:8px 12px}
 }
 @media (max-width:420px){ .pact button{padding:0 6px} .hire-in{padding:16px 18px} .hire-in .apply,.hire-in .chips2{display:none} }
@@ -581,10 +586,11 @@ function navHTML(active){
       <a class="gi" href="#/feed">${IC.grid}<span class="caret">For Business${IC.caret}</span></a>
       <a class="gi" href="#/feed">${IC.adv}<span>Advertise</span></a>
     </nav></div>
-    <div class="gnav-m"><a class="mav" href="#/feed" aria-label="Me">${ME_AV()}</a><label class="msrch">${IC.search}<input placeholder="Search" aria-label="Search"></label><a class="mmsg" href="#/messaging" aria-label="Messaging">${IC.msg}<span class="bdg">1</span></a></div>`;
+    <div class="gnav-m"><a class="mav" href="#/feed" aria-label="Me">${ME_AV()}</a><label class="msrch">${IC.search}<input placeholder="Search" aria-label="Search"></label><button class="mads" onclick="toggleGuide()" aria-label="Ad formats">Ads <i>${guideCount()}</i></button><a class="mmsg" href="#/messaging" aria-label="Messaging">${IC.msg}<span class="bdg">1</span></a></div>`;
 }
 
 /* ================= Flick slots ================= */
+const BASE = {"9/16":[360,640], "1/1":[540,540], "4/3":[560,420]};
 let SLOTS = {};
 function flick(id, brand, cls=""){
   SLOTS[id] = { brand, ready:false, error:false, lastCta:0, variant:0, timer:null, mounted:false };
@@ -620,6 +626,13 @@ function mount(host){
   const f=document.createElement("iframe");
   f.title=`${BRANDS[s.brand].name} Flick: interactive video`; f.setAttribute("allow","autoplay; fullscreen"); f.setAttribute("scrolling","no");
   f.srcdoc=tagDoc(id, BRANDS[s.brand]);
+  // Fixed design size per aspect ratio, scaled to the slot: the creative always lays out the same way,
+  // whatever the screen, and mobile Safari cannot stretch the frame to its content.
+  const [bw,bh]=BASE[BRANDS[s.brand].ar];
+  f.width=bw; f.height=bh; f.style.width=bw+"px"; f.style.height=bh+"px";
+  const fit=()=>{ const w=host.clientWidth, h=host.clientHeight; if(!w||!h) return;
+    const sc=Math.min(w/bw, h/bh); f.style.transform=`translate(${(w-bw*sc)/2}px,${(h-bh*sc)/2}px) scale(${sc})`; };
+  fit(); s.ro=new ResizeObserver(fit); s.ro.observe(host);
   host.prepend(f);
   s.timer=setTimeout(()=>{
     if(s.ready||s.error||!s.mounted) return;
@@ -630,7 +643,7 @@ function mount(host){
 }
 function unmount(host){
   const id=host.dataset.slot, s=SLOTS[id]; if(!s || !s.mounted || s.error) return;
-  clearTimeout(s.timer); s.mounted=false; s.ready=false; s.variant=0;
+  clearTimeout(s.timer); s.mounted=false; s.ready=false; s.variant=0; s.ro?.disconnect();
   host.querySelector("iframe")?.remove(); host.querySelector(".fwarn")?.remove();
   const st=host.querySelector(".fstate"); if(st) st.className="fstate load";
   syncVariant(id);
@@ -957,10 +970,12 @@ const GUIDE = [  // [format, route, anchor, brand, desktop only]
   ["Message ad with companion banner","#/messaging/cross","msg-cross","Cross",true]
 ];
 const PHONE = matchMedia("(max-width:1100px)");  // right rail (Spotlight, companion banner) only shows on wide screens
+function guideCount(){ return GUIDE.filter(g=>!(g[4] && PHONE.matches)).length; }
 function renderGuide(){
   const items = GUIDE.filter(g=>!(g[4] && PHONE.matches));
   document.getElementById("gpanel").innerHTML = items.map(([t,h,a,b],i)=>`<button class="gitem" data-h="${h}" data-a="${a}" onclick="jump('${h}','${a}')"><span class="n">${i+1}</span>${t}<span class="b">${b}</span></button>`).join("");
   document.getElementById("gcount").textContent=items.length;
+  document.querySelectorAll(".gitem").forEach(el=>el.classList.toggle("cur", el.dataset.a===CUR_ANCHOR));
 }
 PHONE.addEventListener("change", renderGuide);
 function toggleGuide(force){
@@ -969,8 +984,10 @@ function toggleGuide(force){
   document.getElementById("gpill").setAttribute("aria-expanded", on);
 }
 let pendingAnchor=null;
+let CUR_ANCHOR=null;
 function jump(h,a){
-  toggleGuide(false); pendingAnchor=a;
+  toggleGuide(false); pendingAnchor=a; CUR_ANCHOR=a;
+  document.querySelectorAll(".gitem").forEach(el=>el.classList.toggle("cur", el.dataset.a===a));
   if(a!=="@convo" && document.getElementById("cwin").classList.contains("on")) closeConvo();
   if(location.hash===h) focusAnchor(); else location.hash=h;
 }
@@ -998,7 +1015,6 @@ function route(){
   const h=location.hash||"#/feed";
   const path=h.slice(1);
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
-  document.querySelectorAll(".gitem").forEach(el=>el.classList.toggle("cur", el.dataset.h==="#"+path && el.dataset.a!=="@convo"));
   if(document.getElementById("cwin").classList.contains("on")) closeConvo();
   closeLead(); closeSheet();
   document.body.classList.toggle("no-dock", !path.startsWith("/feed"));
