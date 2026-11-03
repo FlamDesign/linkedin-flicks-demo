@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flicks on LinkedIn: Concept Demo</title>
+<meta name="description" content="Concept demo by Flam: Flicks across LinkedIn ad formats.">
+<style>
+:root{
+  --li-font:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Fira Sans",Ubuntu,Oxygen,"Oxygen Sans",Cantarell,"Droid Sans","Apple Color Emoji","Segoe UI Emoji","Segoe UI Emoji","Segoe UI Symbol","Lucida Grande",Helvetica,Arial,sans-serif;
+  --bg:#f4f2ee; --card:#fff; --line:rgba(140,140,140,.2); --t1:rgba(0,0,0,.9); --t2:rgba(0,0,0,.6); --t3:rgba(0,0,0,.45);
+  --blue:#0a66c2; --blue-d:#004182; --green:#01754f; --red:#cb112d; --hover:rgba(0,0,0,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--li-font);font-size:14px;color:var(--t1);background:var(--bg);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+a{color:inherit;text-decoration:none}
+.view{display:none;min-height:100vh}
+.view.on{display:block}
+.card{background:var(--card);border-radius:8px;box-shadow:0 0 0 1px var(--line)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Flick slot ---------- */
+.flick{position:relative;overflow:hidden;background:#e9e5df;width:100%;aspect-ratio:var(--ar,1/1)}
+.flick iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.fstate{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;transition:opacity .4s;background:inherit}
+.fstate.hide{opacity:0}
+.fstate.load::after{content:"";width:26px;height:26px;border-radius:50%;border:3px solid rgba(0,0,0,.12);border-top-color:var(--blue);animation:spin .9s linear infinite}
+.flick.dark,.flick.dark .fstate{background:#0d0d0f}
+.flick.dark .fstate.load::after{border-color:#2a2a2a;border-top-color:#9cc7f2}
+.fstate.err{background:#2b1414;color:#ffd9d4;pointer-events:auto;padding:18px;text-align:center;font-size:12px;line-height:1.5}
+.fstate.err b{display:block;font-size:14px;margin-bottom:6px;color:#fff}
+.fwarn{position:absolute;left:8px;bottom:8px;font-size:11px;background:#fff6db;color:#7a5600;border-radius:999px;padding:3px 9px;pointer-events:none;z-index:2}
+
+/* ---------- global nav ---------- */
+.gnav{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);height:52px}
+.gnav-in{max-width:1128px;margin:0 auto;height:100%;display:flex;align-items:center;padding:0 12px}
+.gnav .logo{flex:none;display:block;width:34px;height:34px;margin-right:8px}
+.gsearch{display:flex;align-items:center;gap:8px;width:280px;height:34px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.6);padding:0 14px;color:var(--t2)}
+.gsearch input{border:0;outline:0;background:none;font:inherit;width:100%;color:var(--t1)}
+.gsearch input::placeholder{color:var(--t2)}
+.gitems{margin-left:auto;display:flex;height:100%}
+.gi{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:80px;height:100%;color:var(--t2);font-size:12px;line-height:1.3;gap:2px}
+.gi:hover{color:var(--t1)}
+.gi.on{color:var(--t1);box-shadow:inset 0 -2px 0 var(--t1)}
+.gi svg{display:block}
+.gi .bdg{position:absolute;top:2px;left:calc(50% + 3px);min-width:17px;height:17px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;padding:0 4px;box-shadow:0 0 0 2px #fff}
+.gi .me{width:24px;height:24px;border-radius:50%;overflow:hidden}
+.gsep{width:1px;background:rgba(0,0,0,.08);margin:0 6px}
+.caret{display:inline-flex;align-items:center;gap:2px}
+
+/* ---------- feed layout ---------- */
+.layout{max-width:1128px;margin:0 auto;padding:24px 12px 120px;display:grid;grid-template-columns:225px minmax(0,555px) 300px;gap:24px;justify-content:center}
+.lrail>.card,.rrail>.card{margin-bottom:8px;overflow:hidden}
+.pcard .cover{height:56px;background:linear-gradient(120deg,#304a62,#5c7f99 55%,#a8bfd0)}
+.pcard .av{width:72px;height:72px;border-radius:50%;margin:-36px 0 0 16px;border:2px solid #fff;overflow:hidden;background:#fff}
+.pcard .who{padding:10px 16px 14px}
+.pcard .nm{font-size:18px;font-weight:600;display:flex;align-items:center;gap:6px}
+.pcard .hl{font-size:12px;color:var(--t1);margin-top:4px;line-height:1.35}
+.pcard .loc{font-size:12px;color:var(--t2);margin-top:4px}
+.pcard .co{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;margin-top:10px}
+.lbox{padding:12px 16px}
+.lbox h4{margin:0;font-size:14px;font-weight:600;display:flex;justify-content:space-between}
+.stat{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 0}
+.stat b{color:var(--blue);font-size:14px}
+.stat+.stat{border-top:1px solid rgba(0,0,0,.08)}
+.lnk{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;padding:8px 0}
+.lnk+.lnk{border-top:1px solid rgba(0,0,0,.08)}
+
+/* share box */
+.share{padding:12px 16px 4px}
+.share .row{display:flex;gap:8px;align-items:center}
+.share .sav{width:48px;height:48px;border-radius:50%;overflow:hidden;flex:none}
+.share .inp{flex:1;height:48px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.4);display:flex;align-items:center;padding:0 16px;font-weight:600;color:var(--t2)}
+.share .acts{display:flex;justify-content:space-around;padding:4px 0}
+.share .acts span{display:flex;align-items:center;gap:8px;padding:12px 8px;font-weight:600;color:var(--t2);font-size:14px}
+.sortby{display:flex;align-items:center;gap:8px;margin:2px 0 8px;font-size:12px;color:var(--t2)}
+.sortby hr{flex:1;border:0;border-top:1px solid rgba(0,0,0,.15);margin:0}
+.sortby b{color:var(--t1)}
+
+/* post */
+.post{margin-bottom:8px;overflow:hidden}
+.ctxline{display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid rgba(0,0,0,.08);font-size:12px;color:var(--t2)}
+.ctxline .sm{width:20px;height:20px;border-radius:50%;overflow:hidden;flex:none}
+.ctxline b{color:var(--t1);font-weight:600}
+.ctxline .x{margin-left:auto;display:flex;gap:10px;color:var(--t2)}
+.phead{display:flex;gap:8px;padding:12px 16px 0}
+.phead .lg{width:48px;height:48px;flex:none;overflow:hidden}
+.phead .lg.round{border-radius:50%}
+.phead .meta{flex:1;min-width:0;line-height:1.3}
+.phead .meta .n{font-weight:600;font-size:14px;display:flex;align-items:center;gap:4px}
+.phead .meta .n small{font-weight:400;color:var(--t2)}
+.phead .meta .s{font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phead .r{display:flex;align-items:flex-start;gap:4px;color:var(--t2)}
+.phead .follow{display:inline-flex;align-items:center;gap:4px;color:var(--blue);font-weight:600;font-size:14px;padding:4px 8px;border-radius:4px}
+.phead .follow:hover{background:rgba(10,102,194,.1)}
+.icb{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--t2)}
+.icb:hover{background:var(--hover)}
+.ptext{padding:8px 16px 12px;font-size:14px;line-height:1.43;white-space:pre-line}
+.ptext .more{color:var(--t2)}
+.ptext .tag{color:var(--blue);font-weight:600}
+.vwrap{background:#000;display:flex;justify-content:center;height:600px}
+.vwrap .flick{height:100%;width:auto;aspect-ratio:9/16}
+.hbar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:#eef3f8}
+.hbar .t{flex:1;min-width:0}
+.hbar .t b{display:block;font-size:14px;font-weight:600;line-height:1.3}
+.hbar .t>span{display:block;font-size:12px;color:var(--t2);margin-top:2px}
+.hbar .cta{flex:none;height:32px;padding:0 16px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--blue);color:var(--blue);font-weight:600;font-size:14px}
+.hbar .cta:hover{background:rgba(10,102,194,.1);box-shadow:inset 0 0 0 2px var(--blue)}
+.social{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:12px;color:var(--t2)}
+.social .rx{display:flex;align-items:center;gap:4px}
+.rxi{display:flex}
+.rxi span{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;margin-right:-3px;box-shadow:0 0 0 1px #fff}
+.pact{display:flex;align-items:center;gap:4px;padding:2px 8px 4px;border-top:1px solid rgba(0,0,0,.08)}
+.pact button{display:flex;align-items:center;gap:6px;height:44px;padding:0 10px;border-radius:4px;color:var(--t2);font-weight:600;font-size:14px}
+.pact button:hover{background:var(--hover)}
+.pact .who{width:24px;height:24px;border-radius:50%;overflow:hidden}
+.pact .sp{flex:1}
+
+/* in-stream pre-roll */
+.istream{position:relative}
+.istream .ad-ov{position:absolute;inset:0;pointer-events:none;z-index:3}
+.istream .ad-chip{position:absolute;right:12px;top:12px;pointer-events:auto;background:rgba(0,0,0,.72);color:#fff;font-size:12px;font-weight:600;border-radius:4px;padding:3px 8px;display:flex;gap:6px;align-items:center}
+.istream .ad-chip i{font-style:normal;font-weight:400;opacity:.85}
+.istream .skip{position:absolute;right:0;bottom:64px;pointer-events:auto;background:rgba(0,0,0,.78);color:#fff;font-size:13px;font-weight:600;padding:9px 14px;border-radius:4px 0 0 4px;box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.istream .skip[disabled]{opacity:.85;cursor:default;font-weight:400}
+.istream .visit{position:absolute;left:12px;bottom:12px;pointer-events:auto;background:#fff;color:#000;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;display:flex;gap:6px;align-items:center}
+.istream .prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.25)}
+.istream .prog i{display:block;height:100%;width:0;background:#f5c518}
+.creatorvid{position:relative;height:100%;aspect-ratio:9/16;background:linear-gradient(170deg,#3b4a5a,#1d2733 55%,#0f141a);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
+.creatorvid .play{position:absolute;inset:0;display:grid;place-items:center}
+.creatorvid .play span{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;backdrop-filter:blur(4px)}
+.creatorvid h5{margin:0 0 6px;font-size:20px;line-height:1.25;font-weight:600}
+.creatorvid small{opacity:.8}
+.creatorvid .again{position:absolute;right:12px;top:12px;font-size:12px;background:rgba(0,0,0,.5);padding:4px 10px;border-radius:999px}
+
+/* right rail */
+.news{padding:12px 16px 8px}
+.news h4{margin:0 0 4px;font-size:16px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.news .sub{font-size:14px;color:var(--t2);font-weight:600;margin:6px 0 4px}
+.news .it{padding:6px 0}
+.news .it b{display:block;font-size:14px;font-weight:600;line-height:1.3}
+.news .it span{font-size:12px;color:var(--t2)}
+.news .showmore{display:inline-flex;align-items:center;gap:4px;color:var(--t2);font-weight:600;padding:8px 0}
+.spot{padding:10px 14px 16px;text-align:center}
+.spot .top{display:flex;justify-content:flex-end;align-items:center;gap:6px;font-size:12px;color:var(--t2)}
+.spot .top b{font-weight:600;color:var(--t1)}
+.spot .msg{font-size:12px;color:var(--t2);margin:2px 8px 10px;line-height:1.35}
+.spot .pair{display:flex;justify-content:center;align-items:center;margin-bottom:10px}
+.spot .pair>*{width:60px;height:60px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 3px #fff}
+.spot .pair>*+*{margin-left:-12px;border-radius:6px;width:52px;height:52px}
+.spot .flick{border-radius:6px;margin:0 auto 10px}
+.spot .hl{font-size:16px;line-height:1.3;color:var(--t1);margin:0 6px 6px}
+.spot .vn{font-size:12px;color:var(--t2);margin-bottom:12px}
+.spot .vn b{color:var(--t1)}
+.spot .cta{height:34px;padding:0 18px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--blue);color:var(--blue);font-weight:600;font-size:16px}
+.spot .cta:hover{background:rgba(10,102,194,.1)}
+.foot{padding:8px 16px 0;text-align:center;font-size:12px;color:var(--t2);line-height:2}
+.foot span{margin:0 6px;white-space:nowrap}
+.foot .brand{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--t1);margin-top:4px}
+
+/* messaging dock + overlay */
+.dock{position:fixed;right:24px;bottom:0;width:288px;z-index:50;background:#fff;border-radius:10px 10px 0 0;box-shadow:0 0 0 1px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.15)}
+.dock .bar{display:flex;align-items:center;gap:8px;height:48px;padding:0 10px 0 12px;cursor:pointer}
+.dock .bar .av{width:32px;height:32px;border-radius:50%;overflow:hidden;position:relative}
+.dock .bar .on{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px #fff}
+.dock .bar b{font-weight:600;font-size:14px}
+.dock .bar .bdg{background:var(--red);color:#fff;border-radius:999px;font-size:11px;font-weight:600;min-width:17px;height:17px;display:grid;place-items:center;padding:0 4px}
+.dock .bar .ics{margin-left:auto;display:flex;gap:4px;color:var(--t2)}
+.dock .list{display:none;max-height:420px;overflow-y:auto;border-top:1px solid rgba(0,0,0,.08)}
+.dock.open .list{display:block}
+.thr{display:flex;gap:10px;width:100%;text-align:left;padding:12px;border-bottom:1px solid rgba(0,0,0,.06)}
+.thr:hover{background:rgba(0,0,0,.04)}
+.thr.cur{background:#ebf4fd;box-shadow:inset 3px 0 0 var(--blue)}
+.thr .tav{width:48px;height:48px;border-radius:50%;overflow:hidden;flex:none}
+.thr .tav.sq{border-radius:4px}
+.thr .tt{flex:1;min-width:0}
+.thr .tt .row{display:flex;justify-content:space-between;gap:8px}
+.thr .tt b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thr .tt small{font-size:12px;color:var(--t2);flex:none}
+.thr .tt p{margin:2px 0 0;font-size:14px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thr .tt .sp{font-size:12px;color:var(--t2)}
+.thr.unread .tt b,.thr.unread .tt p{color:var(--t1);font-weight:600}
+.cwin{position:fixed;right:328px;bottom:0;width:500px;height:min(700px,calc(100vh - 70px));z-index:51;background:#fff;border-radius:10px 10px 0 0;box-shadow:0 0 0 1px rgba(0,0,0,.15),0 4px 16px rgba(0,0,0,.2);display:none;flex-direction:column}
+.cwin.on{display:flex}
+.cwin .wh{display:flex;align-items:center;gap:10px;height:48px;padding:0 8px 0 12px;border-bottom:1px solid rgba(0,0,0,.08);flex:none}
+.cwin .wh .lg{width:32px;height:32px;border-radius:4px;overflow:hidden}
+.cwin .wh b{font-weight:600;flex:1}
+.cwin .wh .ics{display:flex;gap:2px}
+
+/* conversation / message ad body (shared by dock window + inbox) */
+.cv{flex:1;overflow-y:auto;scroll-behavior:smooth}
+.cv .spbar{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:6px 16px;background:#f3f6f8}
+.cv .who{padding:14px 16px 8px}
+.cv .who .lg{width:72px;height:72px;overflow:hidden;border-radius:4px}
+.cv .who b{display:block;font-size:16px;font-weight:600;margin-top:8px}
+.cv .day{display:flex;align-items:center;gap:10px;margin:6px 16px;font-size:12px;font-weight:600;color:var(--t2);letter-spacing:.04em}
+.cv .day::before,.cv .day::after{content:"";flex:1;border-top:1px solid rgba(0,0,0,.08)}
+.cmsg{display:flex;gap:8px;padding:8px 16px}
+.cmsg .ma{width:32px;height:32px;flex:none;overflow:hidden;border-radius:4px}
+.cmsg .ma.round{border-radius:50%}
+.cmsg .mb{flex:1;min-width:0}
+.cmsg .mb .mh{font-size:14px;font-weight:600}
+.cmsg .mb .mh small{font-weight:400;color:var(--t2)}
+.cmsg .mb p{margin:4px 0 0;font-size:14px;line-height:1.43}
+.cmsg .mb ul{margin:6px 0 0;padding-left:18px;line-height:1.5}
+.cmsg .mf{margin-top:10px;width:min(260px,100%);border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+.cmsg .mf.sq{width:min(300px,100%)}
+.cmsg .mf .cap{display:flex;justify-content:space-between;gap:6px;font-size:12px;padding:6px 10px;background:#f3f6f8;color:var(--t2)}
+.cmsg .mf .cap b{color:var(--t1);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:6px 16px 16px 56px}
+.chips button{min-height:32px;padding:4px 16px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--blue);color:var(--blue);font-weight:600;font-size:16px;line-height:1.3}
+.chips button:hover{background:rgba(10,102,194,.1);box-shadow:inset 0 0 0 2px var(--blue)}
+.chips button.pri{background:var(--blue);color:#fff}
+.chips button.pri:hover{background:var(--blue-d)}
+.cmsg.me .mb .mh{color:var(--t1)}
+.cv .typing{display:inline-flex;gap:4px;padding:6px 0}
+.cv .typing i{width:6px;height:6px;border-radius:50%;background:#999;animation:blink 1.2s infinite}
+.cv .typing i:nth-child(2){animation-delay:.2s}.cv .typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+/* messaging page */
+#v-msg{background:var(--bg)}
+.mlay{max-width:1128px;margin:0 auto;padding:24px 12px 40px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px}
+.mbox{display:grid;grid-template-columns:360px minmax(0,1fr);height:calc(100vh - 100px);min-height:560px;overflow:hidden}
+.mbox .mleft{border-right:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
+.mbox .mtop{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 10px 16px;border-bottom:1px solid rgba(0,0,0,.08)}
+.mbox .mtop b{font-size:16px;font-weight:600}
+.mbox .msearch{margin:8px 12px;display:flex;align-items:center;gap:8px;height:34px;border-radius:4px;background:#edf3f8;padding:0 10px;color:var(--t2)}
+.mbox .mtabs{display:flex;gap:6px;padding:4px 12px 10px;border-bottom:1px solid rgba(0,0,0,.08)}
+.mbox .mtabs span{height:32px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;font-weight:600;color:var(--t2);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4)}
+.mbox .mtabs span.on{background:var(--green);color:#fff;box-shadow:none}
+.mbox .mlist{flex:1;overflow-y:auto}
+.mbox .mright{display:flex;flex-direction:column;min-height:0}
+.mbox .mrh{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 16px;border-bottom:1px solid rgba(0,0,0,.08)}
+.mbox .mrh b{font-size:14px;font-weight:600;flex:1}
+.compan{padding:10px}
+.compan .top{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:0 2px 8px}
+.compan .flick{border-radius:4px}
+.compan .cap{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 2px 2px}
+.compan .cap .t b{display:block;font-size:14px;font-weight:600}
+.compan .cap .t span{font-size:12px;color:var(--t2)}
+.compan .cap button{height:30px;padding:0 14px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--blue);color:var(--blue);font-weight:600}
+.msgcta{margin:10px 0 2px;height:36px;padding:0 18px;border-radius:999px;background:var(--blue);color:#fff;font-weight:600;font-size:16px}
+.msgcta:hover{background:var(--blue-d)}
+
+/* mobile view */
+#v-mobile{background:#dcd9d3;padding:28px 12px 80px}
+.phone{width:390px;max-width:100%;height:min(844px,calc(100vh - 56px));margin:0 auto;border-radius:44px;background:#111;padding:12px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.screen{width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+.sbar{height:40px;flex:none;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:14px;font-weight:600}
+.mhdr{height:48px;flex:none;background:#fff;display:flex;align-items:center;gap:14px;padding:0 12px;border-bottom:1px solid rgba(0,0,0,.08)}
+.mhdr .logo{width:30px;height:30px}
+.mhdr .sp{flex:1}
+.mhdr .ma{width:28px;height:28px;border-radius:50%;overflow:hidden}
+.mscroll{flex:1;overflow-y:auto;scrollbar-width:none}
+.mscroll::-webkit-scrollbar{display:none}
+.mscroll .post{border-radius:0;box-shadow:none;margin-bottom:8px}
+.mscroll .phead{padding:12px 12px 0}
+.mscroll .phead .lg{width:40px;height:40px}
+.mscroll .ptext{padding:8px 12px 10px}
+.mscroll .vwrap{height:auto}
+.mscroll .vwrap .flick{width:100%;height:auto}
+.mscroll .hbar{padding:10px 12px}
+.mscroll .pact{justify-content:space-between;padding:0 6px}
+.mscroll .pact button{flex-direction:column;gap:2px;height:52px;font-size:12px;padding:0 8px}
+.mnavb{height:56px;flex:none;background:#fff;border-top:1px solid rgba(0,0,0,.08);display:flex;justify-content:space-around;align-items:center;font-size:11px;color:var(--t2)}
+.mnavb span{display:flex;flex-direction:column;align-items:center;gap:2px}
+.mnavb span.on{color:var(--t1)}
+
+/* ---------- ad selector ---------- */
+.gpill{position:fixed;right:24px;bottom:64px;z-index:90;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;background:#1b1f23;color:#f2f2f2;font-weight:600;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.gpill:hover{background:#2a2f34}
+.gpill i{font-style:normal;background:var(--blue);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px}
+.no-dock .gpill{bottom:20px}
+.gscrim{position:fixed;inset:0;z-index:88;display:none}
+.gscrim.on{display:block}
+.gpanel{position:fixed;right:24px;bottom:114px;z-index:89;width:320px;max-height:min(70vh,640px);overflow-y:auto;background:#1b1f23;color:#f2f2f2;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.45);padding:6px 6px 8px;display:none;scrollbar-width:thin}
+.no-dock .gpanel{bottom:70px}
+.gpanel.on{display:block}
+.gpanel h6{margin:10px 10px 4px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9aa1a8}
+.gitem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;min-height:36px;padding:6px 10px;border-radius:8px;font-size:13px;line-height:1.3}
+.gitem:hover{background:#2c3238}
+.gitem.cur{background:#21364d}
+.gitem .n{width:20px;flex:none;color:#9aa1a8;font-size:12px;font-variant-numeric:tabular-nums}
+.gitem .b{margin-left:auto;font-size:11px;color:#9aa1a8;flex:none}
+.pulse{animation:pulse 2.2s ease-out 1}
+@keyframes pulse{0%{box-shadow:0 0 0 0 #f5c518}15%{box-shadow:0 0 0 4px #f5c518}100%{box-shadow:0 0 0 4px transparent}}
+
+/* ---------- leaving sheet, lead form, toast ---------- */
+.scrim{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.6);display:none;place-items:center;padding:16px}
+.scrim.on{display:grid}
+.sheet{width:min(552px,100%);background:#fff;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
+.sheet .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 14px 24px;border-bottom:1px solid rgba(0,0,0,.08)}
+.sheet .sh h3{margin:0;font-size:20px;font-weight:600}
+.sheet .sb{padding:16px 24px}
+.sheet .sb p{margin:0 0 10px;font-size:16px;line-height:1.5}
+.sheet .url{font-size:14px;color:var(--t2);word-break:break-all}
+.sheet .sf{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid rgba(0,0,0,.08)}
+.sheet .sf>*{height:32px;padding:0 16px;border-radius:999px;font-weight:600;font-size:16px;display:inline-flex;align-items:center}
+.sheet .stay{box-shadow:inset 0 0 0 1px var(--blue);color:var(--blue)}
+.sheet .go{background:var(--blue);color:#fff}
+.lgf .sb{max-height:min(60vh,520px);overflow-y:auto}
+.lgf .brand{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.lgf .brand .lg{width:48px;height:48px;border-radius:4px;overflow:hidden}
+.lgf .brand b{display:block;font-size:16px}
+.lgf .brand span{font-size:12px;color:var(--t2)}
+.sheet .sb p.lead{font-size:14px;color:var(--t2);margin:0 0 14px}
+.lgf .me{display:flex;gap:10px;align-items:center;padding:10px 0 14px;border-bottom:1px solid rgba(0,0,0,.08);margin-bottom:12px}
+.lgf .me .a{width:40px;height:40px;border-radius:50%;overflow:hidden}
+.lgf label{display:block;font-size:14px;color:var(--t2);margin:10px 0 4px}
+.lgf input,.lgf select{width:100%;height:36px;border-radius:4px;border:1px solid rgba(0,0,0,.6);padding:0 10px;font:inherit;font-size:14px;color:var(--t1);background:#fff}
+.sheet .sb p.fine{font-size:12px;color:var(--t2);margin-top:14px;line-height:1.45}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:96;background:#1b1f23;color:#fff;font-weight:600;font-size:14px;padding:10px 16px;border-radius:8px;transition:all .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+/* responsive */
+@media (max-width:480px){ .layout .pact button span{display:none} .layout .pact button{padding:0 12px} }
+@media (max-width:1180px){ .cwin{right:24px;bottom:56px;height:min(640px,calc(100vh - 120px))} }
+@media (max-width:1100px){
+  .layout{grid-template-columns:225px minmax(0,555px)}
+  .rrail{display:none}
+  .gsearch{width:200px}
+}
+@media (max-width:860px){
+  .layout{grid-template-columns:minmax(0,555px);padding-top:12px}
+  .lrail{display:none}
+  .gitems .gi:not(.keep){display:none}
+  .gsearch{flex:1;width:auto}
+  .mlay{grid-template-columns:1fr}
+  .mlay>aside{display:none}
+  .mbox{grid-template-columns:1fr}
+  .mbox .mleft{display:none}
+  .cwin{left:8px;right:8px;width:auto}
+  .vwrap{height:520px}
+  .gpanel{right:12px;left:12px;width:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= DESKTOP FEED ================= -->
+<section class="view" id="v-feed">
+  <header class="gnav" id="nav-feed"></header>
+  <div class="layout">
+    <aside class="lrail" id="lrail"></aside>
+    <main id="feed"></main>
+    <aside class="rrail" id="rrail"></aside>
+  </div>
+  <div class="cwin" id="cwin" role="dialog" aria-label="Conversation">
+    <div class="wh"><span class="lg" id="cwin-lg"></span><b id="cwin-name"></b>
+      <span class="ics">
+        <button class="icb" aria-label="More"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
+        <button class="icb" aria-label="Minimize" onclick="closeConvo()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg></button>
+        <button class="icb" aria-label="Close conversation" onclick="closeConvo()"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+      </span></div>
+    <div class="cv" id="cwin-body"></div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="bar" onclick="toggleDock()">
+      <span class="av" id="dock-av"></span><b>Messaging</b><span class="bdg" id="dock-bdg">1</span>
+      <span class="ics">
+        <button class="icb" aria-label="More" onclick="event.stopPropagation()"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
+        <button class="icb" aria-label="Compose" onclick="event.stopPropagation()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9"/><path d="M18 2l4 4-9 9H9v-4z"/></svg></button>
+        <span class="icb" id="dock-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 15l6-6 6 6"/></svg></span>
+      </span>
+    </div>
+    <div class="list" id="dock-list"></div>
+  </div>
+</section>
+
+<!-- ================= MESSAGING PAGE ================= -->
+<section class="view" id="v-msg">
+  <header class="gnav" id="nav-msg"></header>
+  <div class="mlay">
+    <div class="card mbox">
+      <div class="mleft">
+        <div class="mtop"><b>Messaging</b><span style="display:flex;gap:2px;color:var(--t2)"><span class="icb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span><span class="icb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9"/><path d="M18 2l4 4-9 9H9v-4z"/></svg></span></span></div>
+        <div class="msearch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Search messages</div>
+        <div class="mtabs"><span class="on">Focused</span><span>Unread</span><span>My Connections</span><span>InMail</span></div>
+        <div class="mlist" id="mlist"></div>
+      </div>
+      <div class="mright">
+        <div class="mrh" id="mrh"></div>
+        <div class="cv" id="mthread"></div>
+      </div>
+    </div>
+    <aside id="mrail"></aside>
+  </div>
+</section>
+
+<!-- ================= MOBILE ================= -->
+<section class="view" id="v-mobile">
+  <div class="phone"><div class="screen">
+    <div class="sbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#000"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#000" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2" fill="#000"/><rect x="24" y="4" width="1.6" height="4" rx=".8" fill="#000" opacity=".4"/></svg></span></div>
+    <div class="mhdr" id="mhdr"></div>
+    <div class="mscroll" id="mfeed"></div>
+    <div class="mnavb" id="mnavb"></div>
+  </div></div>
+</section>
+
+<!-- ================= shared chrome ================= -->
+<button class="gpill" id="gpill" onclick="toggleGuide()" aria-expanded="false">Ad formats <i id="gcount"></i></button>
+<div class="gscrim" id="gscrim" onclick="toggleGuide(false)"></div>
+<div class="gpanel" id="gpanel" role="dialog" aria-label="Ad formats"></div>
+
+<div class="scrim" id="scrim" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-h">
+    <div class="sh"><h3 id="sheet-h">Leaving LinkedIn</h3><button class="icb" onclick="closeSheet()" aria-label="Dismiss"><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+    <div class="sb"><p>This link will take you to a page that's not on LinkedIn.</p><div class="url" id="sheet-url"></div></div>
+    <div class="sf"><button class="stay" onclick="closeSheet()">Go back</button><a class="go" id="sheet-go" target="_blank" rel="noopener" onclick="setTimeout(closeSheet,150)">Continue</a></div>
+  </div>
+</div>
+
+<div class="scrim" id="lgf" onclick="if(event.target===this)closeLead()">
+  <div class="sheet lgf" role="dialog" aria-modal="true" aria-labelledby="lgf-h">
+    <div class="sh"><h3 id="lgf-h">Get a business quote</h3><button class="icb" onclick="closeLead()" aria-label="Dismiss"><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+    <div class="sb" id="lgf-body"></div>
+    <div class="sf"><button class="stay" onclick="closeLead()">Cancel</button><button class="go" onclick="submitLead()">Submit</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =====================================================================
+   PERSONA (fictional; no real member data)
+   ===================================================================== */
+const ME = { first:"Jordan", last:"Ellis", name:"Jordan Ellis",
+  headline:"Director of Workplace Technology at Northwind Labs | Hybrid work, IT procurement",
+  loc:"San Francisco Bay Area", company:"Northwind Labs", title:"Director of Workplace Technology",
+  email:"jordan.ellis@northwindlabs.example", country:"United States" };
+
+/* =====================================================================
+   FLICK TAGS: each ad.js runs in its own iframe exactly as delivered
+   ===================================================================== */
+const BRANDS = {
+  acer: { name:"Acer", domain:"store.acer.com", url:"https://store.acer.com/en-us/", ar:"9/16", dark:true,
+    src:"https://storage.googleapis.com/bucket-fi-development-apps-5b0640d5/app/abc/videos/eeeu318dko8uchkx61k7dwza.js",
+    followers:"1,402,318 followers",
+    variants:[
+      {n:"Predator Helios Neo 16 AI", url:"https://store.acer.com/en-us/predator-helios-neo-16-ai-gaming-laptop-phn16-73-97fv"},
+      {n:"Acer Chromebook 314", url:"https://store.acer.com/en-us/acer-chromebook-314-cboa314-2h-8878"},
+      {n:"Nitro V 16 AI", url:"https://store.acer.com/en-us/nitro-v-16-ai-gaming-laptop-anv16-61-r2qy"}] },
+  amex: { name:"American Express", domain:"americanexpress.com", url:"https://www.americanexpress.com/us/credit-cards/", ar:"1/1",
+    src:"https://native-ads-dev.appless.workers.dev/f41m4u/ad.js", adConfig:'window.AD_CONFIG=window.AD_CONFIG||{};window.AD_CONFIG.dsp="house";window.AD_CONFIG.clickTracker={"mode":"exit","template":""};',
+    followers:"1,086,540 followers",
+    variants:[
+      {n:"Green Card", url:"https://www.americanexpress.com/us/credit-cards/card/green/"},
+      {n:"Gold Card", url:"https://www.americanexpress.com/us/credit-cards/card/gold-card/"},
+      {n:"Platinum Card", url:"https://www.americanexpress.com/us/credit-cards/card/platinum/"}] },
+  cross: { name:"Cross", domain:"cross.com", url:"https://cross.com/collections/ballpoint-pen", ar:"1/1", dark:true,
+    src:"https://native-ads-dev.appless.workers.dev/6a9915fffac7a1784444e730_c3pgst/ad.js",
+    followers:"38,912 followers",
+    variants:[
+      {n:"Black", url:"https://cross.com/collections/ballpoint-pen"},
+      {n:"Chrome", url:"https://cross.com/collections/ballpoint-pen"},
+      {n:"Gold", url:"https://cross.com/collections/ballpoint-pen"}] }
+};
+
+function tagDoc(slotId, b){
+  // Bridge runs before the tag: forwards ready, real errors, CTA (all three routes) and variant switches to this page.
+  const bridge = `(function(){var S=${JSON.stringify(slotId)};function t(m){m.flam=1;m.slot=S;try{parent.postMessage(m,"*")}catch(e){}}
+window.open=function(u){t({type:"cta",url:String(u||"")});return null};
+window.__vxOpen=function(u){t({type:"cta",url:u||""});return true};
+window.ExitApi={exit:function(n,u){t({type:"cta",url:u||""})}};
+document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[target=_blank]");if(a){e.preventDefault();t({type:"cta",url:a.href})}},true);
+function hook(v){if(v.__flam)return;v.__flam=1;
+v.addEventListener("vertex-ready",function(){t({type:"ready"})});
+v.addEventListener("vertex-error",function(e){var d=e.detail||{};if(d.recovered||d.severity==="warning"){t({type:"warn",msg:(d.code||d.message||"")+""});return}t({type:"error",msg:(d.message||d.code||"render error")+""})});
+v.addEventListener("vertex-cta",function(e){var d=e.detail||{};t({type:"cta",url:d.url||""})});
+v.addEventListener("vertex-diff-change",function(e){var d=e.detail||{};t({type:"switch",diff:+d.diff||0})});}
+new MutationObserver(function(){var v=document.querySelector("vertex-player");if(v)hook(v)}).observe(document.documentElement,{childList:true,subtree:true});
+window.addEventListener("error",function(e){var s=e.target;if(s&&s.tagName==="SCRIPT")t({type:"error",msg:"Could not load "+s.src})},true);})();`;
+  const cfg = b.adConfig ? `<script>${b.adConfig}<\/script>` : "";
+  const bg = b.dark ? "#0d0d0f" : "#e9e5df";
+  return `<!doctype html>
+<meta charset=utf-8>
+<meta name=ad.orientation content=portrait,landscape>
+<style>html,body{margin:0;height:100%;background:${bg};overflow:hidden}</style>
+<script>${bridge}<\/script>
+<script>var ExitApi=window.ExitApi||{exit:function(){}},clickTag="\${CLICK_URL_UNESC}";<\/script>
+${cfg}
+<script src=${b.src}><\/script>`;
+}
+
+/* ================= helpers ================= */
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let toastT; function toast(t){ const el=document.getElementById("toast"); el.textContent=t; el.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("on"),2600); }
+function shortUrl(u){ try{ const x=new URL(u); return x.host.replace(/^www\./,"")+x.pathname.replace(/\/$/,""); }catch(e){ return u; } }
+function openSheet(url){
+  document.getElementById("sheet-url").textContent = shortUrl(url);
+  const go=document.getElementById("sheet-go"); go.href=url;
+  document.getElementById("scrim").classList.add("on");
+}
+function closeSheet(){ document.getElementById("scrim").classList.remove("on"); }
+addEventListener("keydown", e=>{ if(e.key==="Escape"){ closeSheet(); closeLead(); toggleGuide(false); } });
+
+/* ---------- icons and avatars ---------- */
+const LOGO = (s=34) => `<svg class="logo" width="${s}" height="${s}" viewBox="0 0 34 34" aria-label="LinkedIn"><rect width="34" height="34" rx="4" fill="#0a66c2"/><path d="M8.6 13.4h3.7v12H8.6zM10.45 7.6a2.15 2.15 0 1 1 0 4.3 2.15 2.15 0 0 1 0-4.3M14.6 13.4h3.55v1.64h.05c.5-.94 1.7-1.94 3.52-1.94 3.76 0 4.45 2.47 4.45 5.69v6.61h-3.7v-5.86c0-1.4-.03-3.2-1.95-3.2-1.95 0-2.25 1.52-2.25 3.1v5.96H14.6z" fill="#fff"/></svg>`;
+function personSVG(o){ // simple illustrated portrait, fictional
+  const {bg="#c7d6e4",skin="#e3b48f",hair="#2d221c",shirt="#2f4a6b",style=0}=o||{};
+  const hairPath = style===1 ? `<path d="M30 40c0-14 8-22 20-22s21 8 21 22c0 6-1 10-3 14-1-9-5-15-18-15s-17 6-18 15c-2-4-2-8-2-14z" fill="${hair}"/>`
+                             : `<path d="M31 41c0-13 8-21 19-21s19 8 19 21c-3-6-9-9-19-9s-16 3-19 9z" fill="${hair}"/>`;
+  return `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="${bg}"/><path d="M16 100c2-20 16-30 34-30s32 10 34 30z" fill="${shirt}"/><rect x="43" y="56" width="14" height="16" rx="6" fill="${skin}"/><ellipse cx="50" cy="44" rx="17" ry="20" fill="${skin}"/>${hairPath}</svg>`;
+}
+const ME_AV = () => personSVG({bg:"#c9d5df",skin:"#d9a77f",hair:"#2a1f18",shirt:"#33465c"});
+const PEOPLE = {
+  maya:{n:"Maya Chen", h:"VP Product at Lumen Grid", av:()=>personSVG({bg:"#e2d6c8",skin:"#efc9a4",hair:"#1b1512",shirt:"#7a8d6b",style:1}), deg:"2nd"},
+  ava:{n:"Ava Morales", h:"Client gifting and events consultant | Creator", av:()=>personSVG({bg:"#d9cfe6",skin:"#c98e66",hair:"#3a2418",shirt:"#8a4f4f",style:1}), deg:"3rd+"},
+  priya:{n:"Priya Nair", h:"Product designer | Writing about calmer ways to work", av:()=>personSVG({bg:"#cfe3dc",skin:"#b97f58",hair:"#16110e",shirt:"#3e5a7a",style:1}), deg:"2nd"},
+  dan:{n:"Daniel Okafor", h:"Head of Revenue Operations at Fieldline", av:()=>personSVG({bg:"#d6dde8",skin:"#7b5038",hair:"#130e0b",shirt:"#4b4b52"}), deg:"1st"},
+  sam:{n:"Sam Whitaker", h:"Engineering Manager at Northwind Labs", av:()=>personSVG({bg:"#e6dcc8",skin:"#f0c8a8",hair:"#8a5a2b",shirt:"#2e5e4e"}), deg:"1st"},
+  lena:{n:"Lena Fischer", h:"Recruiter at Harbor & Co", av:()=>personSVG({bg:"#efd8d0",skin:"#f2cfb3",hair:"#b98a4a",shirt:"#59607a",style:1}), deg:"2nd"}
+};
+const LG = {
+  acer:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#fff"/><rect x=".5" y=".5" width="47" height="47" fill="none" stroke="#e6e6e6"/><text x="24" y="29" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="15" font-style="italic" font-weight="700" fill="#83b81a">acer</text></svg>`,
+  amex:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#006fcf"/><text x="24" y="21" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="7.4" font-weight="800" fill="#fff" letter-spacing=".2">AMERICAN</text><text x="24" y="31" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="7.4" font-weight="800" fill="#fff" letter-spacing=".2">EXPRESS</text></svg>`,
+  cross:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#111"/><text x="24" y="28" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="10" fill="#fff" letter-spacing="2">CROSS</text></svg>`,
+  northwind:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#0e5e6f"/><path d="M14 34V14l20 20V14" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg>`,
+  news:`<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" fill="#915907"/><path d="M14 13h16l4 4v18H14z" fill="#fff"/><path d="M18 21h12M18 26h12M18 31h8" stroke="#915907" stroke-width="2"/></svg>`
+};
+const VERIFIED = `<svg width="16" height="16" viewBox="0 0 16 16" aria-label="Verified"><path d="M8 1l1.6 1.2 2-.1.6 1.9 1.6 1.2-.6 1.9.6 1.9-1.6 1.2-.6 1.9-2-.1L8 15l-1.6-1.2-2 .1-.6-1.9-1.6-1.2.6-1.9-.6-1.9 1.6-1.2.6-1.9 2 .1z" fill="none" stroke="rgba(0,0,0,.6)" stroke-width="1.3"/><path d="M5.5 8l1.7 1.7L10.6 6.3" fill="none" stroke="rgba(0,0,0,.6)" stroke-width="1.4"/></svg>`;
+const DOTS = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`;
+const XI = `<svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+const GLOBE = `<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="vertical-align:-2px"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2.2 2 10.8 0 13M8 1.5c-2 2.2-2 10.8 0 13"/></svg>`;
+const RX = `<span class="rxi"><span style="background:#378fe9"><svg width="10" height="10" viewBox="0 0 16 16" fill="#fff"><path d="M4 7h2v7H4zM7 7l2.5-5c1.3 0 2 .8 2 2L11 6.5h2.6c.8 0 1.4.8 1.2 1.6l-1.2 4.6c-.2.8-.8 1.3-1.6 1.3H7z"/></svg></span><span style="background:#6dae4f"><svg width="10" height="10" viewBox="0 0 16 16" fill="#fff"><path d="M8 2l1.6 3.6 3.9.4-2.9 2.6.8 3.9L8 10.5 4.6 12.5l.8-3.9L2.5 6l3.9-.4z"/></svg></span><span style="background:#df704d"><svg width="10" height="10" viewBox="0 0 16 16" fill="#fff"><path d="M8 14S2 10.2 2 6.2A3.2 3.2 0 0 1 8 4.6a3.2 3.2 0 0 1 6 1.6C14 10.2 8 14 8 14z"/></svg></span></span>`;
+const IC = {
+  home:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M23 9v2h-2v7a3 3 0 0 1-3 3h-4v-6h-4v6H6a3 3 0 0 1-3-3v-7H1V9l11-7z"/></svg>`,
+  net:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 16v6H3v-6a3 3 0 0 1 3-3h3a3 3 0 0 1 3 3zm5.5-3A3.5 3.5 0 1 0 14 9.5a3.5 3.5 0 0 0 3.5 3.5zm1 2h-2a2.5 2.5 0 0 0-2.5 2.5V22h7v-4.5a2.5 2.5 0 0 0-2.5-2.5zM7.5 2A4.5 4.5 0 1 0 12 6.5 4.49 4.49 0 0 0 7.5 2z"/></svg>`,
+  jobs:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17 6V5a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v1H2v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V6zM9 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9zm10 9a4 4 0 0 0 3-1.38V17a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-4.38A4 4 0 0 0 5 14z"/></svg>`,
+  msg:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 4H8a7 7 0 0 0 0 14h4v4l8.16-5.39A6.78 6.78 0 0 0 23 11.29 7.3 7.3 0 0 0 16 4zm-8 8.25A1.25 1.25 0 1 1 9.25 11 1.25 1.25 0 0 1 8 12.25zm4 0A1.25 1.25 0 1 1 13.25 11 1.25 1.25 0 0 1 12 12.25zm4 0A1.25 1.25 0 1 1 17.25 11 1.25 1.25 0 0 1 16 12.25z"/></svg>`,
+  bell:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22 19h-8.28a2 2 0 1 1-3.44 0H2v-1a4.52 4.52 0 0 1 1.17-2.83l1-1.17h15.7l1 1.17A4.42 4.42 0 0 1 22 18zM18.21 7.44A6.27 6.27 0 0 0 12 2a6.27 6.27 0 0 0-6.21 5.44L5 13h14z"/></svg>`,
+  more:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v2H3zm0 6h18v2H3zm0 6h18v2H3z"/></svg>`,
+  grid:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h4v4H3zm7 4h4V3h-4zm7-4v4h4V3zM3 14h4v-4H3zm7 0h4v-4h-4zm7 0h4v-4h-4zM3 21h4v-4H3zm7 0h4v-4h-4zm7 0h4v-4h-4z"/></svg>`,
+  adv:`<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12a9 9 0 1 1-9-9v2a7 7 0 1 0 7 7zm-9-4a4 4 0 1 0 4 4h-2a2 2 0 1 1-2-2zm1.4-6.4l1.6 1.6-3.6 3.6.9.9 3.6-3.6 1.6 1.6V2.6h-4.1z"/></svg>`,
+  caret:`<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11L3 6h10z"/></svg>`,
+  search:`<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M14.56 12.44L11.3 9.18a5.51 5.51 0 1 0-2.12 2.12l3.26 3.26a1.5 1.5 0 1 0 2.12-2.12zM3 6.5A3.5 3.5 0 1 1 6.5 10 3.5 3.5 0 0 1 3 6.5z"/></svg>`,
+  like:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 10v11H3V10zM7 10l4-8c1.7 0 2.6 1 2.6 2.6L13 9h6.3c1.1 0 1.9 1 1.6 2.1l-1.7 7.5c-.2 1-1.1 1.6-2.1 1.6H7"/></svg>`,
+  cmt:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 19l-4 3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3z"/></svg>`,
+  rep:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></svg>`,
+  send:`<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3L0 10l7.66 4.26L16 8l-6.26 8.34L14 24z"/></svg>`,
+  video:`<svg width="24" height="24" viewBox="0 0 24 24" fill="#5f9b41"><path d="M19 4H5a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm-9 12V8l6 4z"/></svg>`,
+  photo:`<svg width="24" height="24" viewBox="0 0 24 24" fill="#378fe9"><path d="M19 4H5a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm1 13a1 1 0 0 1-.29.71L16 14l-2 2-6-6-4 4V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1zm-2-7a2 2 0 1 1-2-2 2 2 0 0 1 2 2z"/></svg>`,
+  article:`<svg width="24" height="24" viewBox="0 0 24 24" fill="#e06847"><path d="M21 3v2H3V3zm-6 6h6V7h-6zm0 4h6v-2h-6zm0 4h6v-2h-6zM3 21h18v-2H3zM13 7H3v10h10z"/></svg>`,
+  book:`<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 1H4a1 1 0 0 0-1 1v13l5-3 5 3V2a1 1 0 0 0-1-1z"/></svg>`,
+  grp:`<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8.5 7h-1A1.5 1.5 0 0 0 6 8.5V14h4V8.5A1.5 1.5 0 0 0 8.5 7zM12.75 8h-.5A1.25 1.25 0 0 0 11 9.25V14h3V9.25A1.25 1.25 0 0 0 12.75 8zM3.75 8h-.5A1.25 1.25 0 0 0 2 9.25V14h3V9.25A1.25 1.25 0 0 0 3.75 8zM8 6a2 2 0 1 0-2-2 2 2 0 0 0 2 2zM12.5 7A1.5 1.5 0 1 0 11 5.5 1.5 1.5 0 0 0 12.5 7zM3.5 7A1.5 1.5 0 1 0 2 5.5 1.5 1.5 0 0 0 3.5 7z"/></svg>`,
+  ev:`<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2v9a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V2zm11 9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6h10zM5 4V1h1v3zm5 0V1h1v3z"/></svg>`,
+  info:`<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 7 7 7 7 0 0 0-7-7zm1 11H7V7h2zm0-6.5H7V4h2z"/></svg>`,
+  ext:`<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3H3v10h10v-3M9 2h5v5M14 2L7 9"/></svg>`,
+  play:`<svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>`
+};
+
+function navHTML(active){
+  const it = (k,label,icon,badge,keep,href) => `<a class="gi ${active===k?"on":""} ${keep?"keep":""}" href="${href||"#"}" ${href?"":`onclick="toast('Only the feed, messaging and mobile views are live in this demo');return false"`}>${icon}${badge?`<span class="bdg">${badge}</span>`:""}<span>${label}</span></a>`;
+  return `<div class="gnav-in">
+    <a href="#/feed" aria-label="LinkedIn home">${LOGO(34)}</a>
+    <label class="gsearch">${IC.search}<input placeholder="Search" aria-label="Search"></label>
+    <nav class="gitems">
+      ${it("home","Home",IC.home,"",true,"#/feed")}
+      ${it("net","My Network",IC.net,"2")}
+      ${it("jobs","Jobs",IC.jobs)}
+      ${it("msg","Messaging",IC.msg,"1",true,"#/messaging")}
+      ${it("bell","Notifications",IC.bell,"12")}
+      <a class="gi" href="#/feed"><span class="me">${ME_AV()}</span><span class="caret">Me${IC.caret}</span></a>
+      <span class="gsep"></span>
+      <a class="gi" href="#/feed">${IC.grid}<span class="caret">For Business${IC.caret}</span></a>
+      <a class="gi" href="#/feed">${IC.adv}<span>Advertise</span></a>
+    </nav></div>`;
+}
+
+/* ================= Flick slots ================= */
+let SLOTS = {};
+function flick(id, brand, cls=""){
+  SLOTS[id] = { brand, ready:false, error:false, lastCta:0, variant:0, timer:null, mounted:false };
+  const b=BRANDS[brand];
+  return `<div class="flick fl-${brand} ${b.dark?"dark":""} ${cls}" data-slot="${id}" style="--ar:${b.ar}"><div class="fstate load"></div></div>`;
+}
+function variantOf(id){ const s=SLOTS[id], b=BRANDS[s.brand]; return b.variants[s.variant] || b.variants[0]; }
+function shop(id){ const s=SLOTS[id]; if(!s) return; openSheet(variantOf(id).url || BRANDS[s.brand].url); }
+const onSwitch = {};
+function syncVariant(id){
+  const s=SLOTS[id]; if(!s) return;
+  document.querySelectorAll(`[data-vname="${id}"]`).forEach(el=>el.textContent = variantOf(id).n);
+  if(onSwitch[id]) onSwitch[id](s.variant);
+}
+const LIVE_SEL = ".view.on .flick[data-slot], .cwin.on .flick[data-slot]";
+let io = null;
+function observeFlicks(){
+  if(io) io.disconnect();
+  io = new IntersectionObserver(entries=>{ entries.forEach(en=>{ en.isIntersecting ? mount(en.target) : unmount(en.target); }); }, { rootMargin:"700px 0px 700px 0px" });
+  document.querySelectorAll(LIVE_SEL).forEach(h=>io.observe(h));
+  requestAnimationFrame(mountVisible); setTimeout(mountVisible, 80);
+}
+function mountVisible(){
+  document.querySelectorAll(LIVE_SEL).forEach(h=>{
+    const r=h.getBoundingClientRect();
+    if(r.width && r.bottom > -700 && r.top < innerHeight+700) mount(h);
+  });
+}
+setInterval(mountVisible, 1500);
+function mount(host){
+  const id=host.dataset.slot, s=SLOTS[id]; if(!s || s.mounted) return;
+  s.mounted=true; s.ready=false; s.error=false;
+  const f=document.createElement("iframe");
+  f.title=`${BRANDS[s.brand].name} Flick: interactive video`; f.setAttribute("allow","autoplay; fullscreen"); f.setAttribute("scrolling","no");
+  f.srcdoc=tagDoc(id, BRANDS[s.brand]);
+  host.prepend(f);
+  s.timer=setTimeout(()=>{
+    if(s.ready||s.error||!s.mounted) return;
+    host.querySelector(".fstate")?.classList.add("hide");
+    if(!host.querySelector(".fwarn")) host.insertAdjacentHTML("beforeend",`<span class="fwarn">No ready signal from Flick yet</span>`);
+    console.warn("[flicks] no vertex-ready from", id, BRANDS[s.brand].src);
+  },9000);
+}
+function unmount(host){
+  const id=host.dataset.slot, s=SLOTS[id]; if(!s || !s.mounted || s.error) return;
+  clearTimeout(s.timer); s.mounted=false; s.ready=false; s.variant=0;
+  host.querySelector("iframe")?.remove(); host.querySelector(".fwarn")?.remove();
+  const st=host.querySelector(".fstate"); if(st) st.className="fstate load";
+  syncVariant(id);
+}
+window.addEventListener("message", e=>{
+  const m=e.data; if(!m || m.flam!==1) return;
+  const s=SLOTS[m.slot]; if(!s) return;
+  const host=document.querySelector(`.flick[data-slot="${m.slot}"]`);
+  if(!host || e.source!==host.querySelector("iframe")?.contentWindow) return;
+  if(m.type==="ready"){ s.ready=true; clearTimeout(s.timer); host.querySelector(".fstate")?.classList.add("hide"); host.querySelector(".fwarn")?.remove(); if(onReady[m.slot]) onReady[m.slot](); }
+  else if(m.type==="warn"){ console.info("[flicks] recovered warning", m.slot, m.msg); }
+  else if(m.type==="error"){
+    s.error=true; clearTimeout(s.timer); console.error("[flicks] render error", m.slot, m.msg);
+    const st=host.querySelector(".fstate"); st.className="fstate err";
+    st.innerHTML=`<div><b>Flick failed to load</b>${esc(m.msg)}<br><br>If this file is open inside a preview window, open it directly in Chrome. Previews block ad scripts.</div>`;
+  }
+  else if(m.type==="switch"){ s.variant=Math.max(0,Math.min(m.diff, BRANDS[s.brand].variants.length-1)); syncVariant(m.slot); }
+  else if(m.type==="cta"){
+    // Creatives can fire the CTA up to three ways, sometimes first with an unfilled macro; act once, prefer a real URL.
+    const real = /^https?:\/\//.test(m.url||"") && !/\$\{/.test(m.url) ? m.url : "";
+    const now=Date.now();
+    if(now-s.lastCta<900){ if(real && s.ctaFallback){ s.ctaFallback=false; openSheet(real); } return; }
+    s.lastCta=now; s.ctaFallback=!real;
+    openSheet(real || variantOf(m.slot).url || BRANDS[s.brand].url);
+  }
+});
+const onReady = {};
+
+/* =====================================================================
+   POST BUILDERS
+   ===================================================================== */
+function actions(n){
+  return `<div class="social"><span class="rx">${RX}&nbsp;${n[0]}</span><span>${n[1]} comments · ${n[2]} reposts</span></div>
+  <div class="pact"><button aria-label="Reacting as ${ME.name}" style="padding:0 6px"><span class="who">${ME_AV()}</span>${IC.caret}</button><button>${IC.like}<span>Like</span></button><button>${IC.cmt}<span>Comment</span></button><button>${IC.rep}<span>Repost</span></button><button>${IC.send}<span>Send</span></button></div>`;
+}
+function promotedHead(brand){
+  const b=BRANDS[brand];
+  return `<div class="phead"><span class="lg">${LG[brand]}</span><div class="meta"><div class="n">${b.name}</div><div class="s">${b.followers}</div><div class="s">Promoted</div></div>
+    <div class="r"><button class="follow">+ Follow</button><button class="icb" aria-label="Ad options">${DOTS}</button></div></div>`;
+}
+function hbar(slot, brand, headPre, cta){
+  return `<div class="hbar"><div class="t"><b>${headPre}<span data-vname="${slot}">${BRANDS[brand].variants[0].n}</span></b><span>${BRANDS[brand].domain}</span></div><button class="cta" onclick="shop('${slot}')">${cta}</button></div>`;
+}
+function organic(p, time, text, n, ctx){
+  const P=PEOPLE[p];
+  return `<article class="card post">${ctx?`<div class="ctxline"><span class="sm">${PEOPLE[ctx[0]].av()}</span><span><b>${PEOPLE[ctx[0]].n}</b> ${ctx[1]}</span><span class="x">${DOTS}${XI}</span></div>`:""}
+    <div class="phead"><span class="lg round">${P.av()}</span><div class="meta"><div class="n">${P.n} <small>· ${P.deg}</small></div><div class="s">${P.h}</div><div class="s">${time} · ${GLOBE}</div></div><div class="r"><button class="icb">${DOTS}</button>${ctx?"":`<button class="icb">${XI}</button>`}</div></div>
+    <div class="ptext">${text}</div>${actions(n)}</article>`;
+}
+
+/* ---------- Desktop feed ---------- */
+function renderFeed(){
+  SLOTS={};
+  document.getElementById("nav-feed").innerHTML = navHTML("home");
+  document.getElementById("dock-av").innerHTML = ME_AV()+`<span class="on"></span>`;
+  document.getElementById("lrail").innerHTML = `
+    <div class="card pcard"><div class="cover"></div><div class="av">${ME_AV()}</div>
+      <div class="who"><div class="nm">${ME.name} ${VERIFIED}</div><div class="hl">${ME.headline}</div><div class="loc">${ME.loc}</div>
+      <div class="co"><span style="width:20px;height:20px;display:inline-block">${LG.northwind}</span>${ME.company}</div></div></div>
+    <div class="card lbox"><h4>Analytics <span>›</span></h4><div class="stat" style="margin-top:6px"><span>Profile viewers</span><b>214</b></div><div class="stat"><span>Post impressions</span><b>1,086</b></div></div>
+    <div class="card lbox"><div class="lnk">${IC.book}Saved items</div><div class="lnk">${IC.grp}Groups</div><div class="lnk">${IC.ev}Events</div></div>`;
+
+  const acerV = `<article class="card post" data-anchor="feed-acer">${promotedHead("acer")}
+    <div class="ptext">Three laptops, one video. Tap a model to see it in action, then pick the one that fits how your team works.</div>
+    <div class="vwrap">${flick("feed-acer","acer")}</div>
+    ${hbar("feed-acer","acer","","Buy now")}
+    ${actions(["1,284","96","41"])}</article>`;
+
+  const amexSq = `<article class="card post" data-anchor="feed-amex">${promotedHead("amex")}
+    <div class="ptext">Green, Gold or Platinum. Tap a card to see where it fits your week, from coffee runs to the airport lounge.</div>
+    ${flick("feed-amex","amex")}
+    ${hbar("feed-amex","amex","American Express® ","Learn more")}
+    ${actions(["2,017","143","88"])}</article>`;
+
+  const crossTLA = `<article class="card post" data-anchor="feed-cross">
+    <div class="phead"><span class="lg round">${PEOPLE.ava.av()}</span><div class="meta"><div class="n">${PEOPLE.ava.n} <small>· ${PEOPLE.ava.deg}</small></div><div class="s">${PEOPLE.ava.h}</div><div class="s">Promoted by Cross</div></div>
+      <div class="r"><button class="follow">+ Follow</button><button class="icb">${DOTS}</button></div></div>
+    <div class="ptext">Year-end client gifts: the first question I ask every team is black, chrome or gold?
+
+Tap through the three finishes below and tell me which one your clients would keep on their desk. <span class="tag">#ClientGifting</span> <span class="tag">#B2B</span></div>
+    ${flick("feed-cross","cross")}
+    ${actions(["642","58","12"])}</article>`;
+
+  const instream = `<article class="card post" data-anchor="feed-instream">
+    <div class="phead"><span class="lg round">${PEOPLE.priya.av()}</span><div class="meta"><div class="n">${PEOPLE.priya.n} <small>· ${PEOPLE.priya.deg}</small></div><div class="s">${PEOPLE.priya.h}</div><div class="s">1d · ${GLOBE}</div></div>
+      <div class="r"><button class="follow">+ Follow</button><button class="icb">${DOTS}</button></div></div>
+    <div class="ptext">Three habits that cut my meeting time in half this quarter. Full breakdown in the video.</div>
+    <div class="vwrap istream" id="istream">${instreamInner()}</div>
+    ${actions(["3,402","211","96"])}</article>`;
+
+  document.getElementById("feed").innerHTML = `
+    <div class="card share"><div class="row"><span class="sav">${ME_AV()}</span><button class="inp">Start a post</button></div>
+      <div class="acts"><span>${IC.video}Video</span><span>${IC.photo}Photo</span><span>${IC.article}Write article</span></div></div>
+    <div class="sortby"><hr><span>Sort by: <b>Top</b> ▾</span></div>
+    ${organic("dan","3h","We moved our whole sales team to a four-day sprint cadence in Q3. Pipeline held, burnout dropped. Two things I would do differently next time…  <span class=\"more\">…more</span>",["418","37","9"])}
+    ${acerV}
+    ${organic("maya","5h","Hiring: two senior product designers for our grid analytics team. Remote across the US. If you like hard problems with real-world impact, my DMs are open.",["1,106","84","63"],["sam","likes this"])}
+    ${crossTLA}
+    ${amexSq}
+    ${instream}
+    ${organic("lena","8h","Quick reminder for anyone job hunting this month: a short note to the hiring manager after you apply still works. Keep it to three lines.",["2,311","156","120"],["dan","commented on this"])}`;
+
+  document.getElementById("rrail").innerHTML = `
+    <div class="card news"><h4>LinkedIn News <span style="color:var(--t2)">${IC.info}</span></h4><div class="sub">Top stories</div>
+      ${[["Holiday hiring starts earlier","2h ago · 4,318 readers"],["Companies rethink return-to-office","4h ago · 12,906 readers"],["AI budgets grow into 2027","6h ago · 3,277 readers"],["Gift budgets get tighter this year","8h ago · 1,904 readers"],["The rise of the four-day sprint","1d ago · 2,560 readers"]].map(n=>`<div class="it"><b>${n[0]}</b><span>${n[1]}</span></div>`).join("")}
+      <span class="showmore">Show more ▾</span></div>
+    <div class="card spot" data-anchor="spot-amex">
+      <div class="top"><b>Ad</b>${DOTS}</div>
+      <div class="msg">${ME.first}, find the card that fits your week</div>
+      <div class="pair"><span>${ME_AV()}</span><span>${LG.amex}</span></div>
+      ${flick("spot-amex","amex")}
+      <div class="vn">Showing <b data-vname="spot-amex">${BRANDS.amex.variants[0].n}</b></div>
+      <button class="cta" onclick="shop('spot-amex')">Learn more</button>
+    </div>
+    <div class="foot"><span>About</span><span>Accessibility</span><span>Help Center</span><br><span>Privacy &amp; Terms ▾</span><span>Ad Choices</span><br><span>Advertising</span><span>Business Services ▾</span><br><span>Get the LinkedIn app</span><span>More</span>
+      <div class="brand"><span style="font-weight:700;color:#0a66c2">Linked</span><span style="display:inline-block;width:14px;height:14px;margin-left:-6px">${LOGO(14)}</span> LinkedIn Corporation © 2026</div></div>`;
+
+  renderDockList();
+  observeFlicks();
+}
+
+/* ---------- In-stream pre-roll ---------- */
+let IS = { t:null, left:15, skipAt:5, done:false };
+function instreamInner(){
+  return `${flick("is-acer","acer")}
+    <div class="ad-ov"><button class="ad-chip" onclick="shop('is-acer')">Ad <i>· <span id="is-left">0:15</span> · ${BRANDS.acer.domain}</i> ${IC.ext}</button>
+      <button class="skip" id="is-skip" disabled onclick="skipPreroll()">Video in 5</button>
+      <span class="prog"><i id="is-prog"></i></span></div>`;
+}
+function startPreroll(){
+  clearInterval(IS.t); IS.left=15; IS.done=false;
+  const el=document.getElementById("is-left"), sk=document.getElementById("is-skip"), pr=document.getElementById("is-prog");
+  IS.t=setInterval(()=>{
+    if(!document.getElementById("is-left")){ clearInterval(IS.t); return; }
+    const sw=SLOTS["is-acer"]; if(!sw||!sw.mounted) return;
+    IS.left=Math.max(0,IS.left-1); const el2=document.getElementById("is-left"); el2.textContent="0:"+String(IS.left).padStart(2,"0");
+    const p=document.getElementById("is-prog"); p.style.width=((15-IS.left)/15*100)+"%";
+    const s=document.getElementById("is-skip"); const el3=15-IS.left;
+    if(el3>=IS.skipAt){ s.disabled=false; s.textContent="Skip ad ›"; } else { s.textContent="Video in "+(IS.skipAt-el3); }
+    if(IS.left===0) clearInterval(IS.t);
+  },1000);
+}
+onReady["is-acer"] = ()=>{ if(!IS.done) startPreroll(); };
+function skipPreroll(){
+  clearInterval(IS.t); IS.done=true;
+  const host=document.querySelector('.flick[data-slot="is-acer"]'); if(host) unmount(host);
+  delete SLOTS["is-acer"];
+  document.getElementById("istream").innerHTML = `<div class="creatorvid"><button class="again" onclick="replayPreroll()">Replay ad</button><div class="play"><span>${IC.play}</span></div><h5>3 habits that cut my meetings in half</h5><small>Priya Nair · creator video plays here</small></div>`;
+}
+function replayPreroll(){
+  IS.done=false;
+  document.getElementById("istream").innerHTML = instreamInner();
+  SLOTS["is-acer"] && observeFlicks();
+}
+
+/* ---------- Conversation ad (Acer) ---------- */
+const CONVO_INTRO = () => `Hi ${ME.first}, refreshing laptops for your team this year? Tap through three Acer models in the video, then pick what you'd like to do next.`;
+function convoStart(slot){
+  return `<div class="spbar"><span>Sponsored</span><span>Nov 2</span></div>
+    <div class="who"><span class="lg" style="display:block">${LG.acer}</span><b>Acer for Business</b></div>
+    <div class="day">TODAY</div>
+    <div class="cmsg"><span class="ma">${LG.acer}</span><div class="mb"><div class="mh">Acer for Business <small>· 9:14 AM</small></div><p>${CONVO_INTRO()}</p>
+      <div class="mf">${flick(slot,"acer")}<div class="cap"><span>Showing</span><b data-vname="${slot}">${BRANDS.acer.variants[0].n}</b></div></div></div></div>
+    <div class="cmsg" id="${slot}-anchor" style="display:none"></div>
+    <div class="chips" id="${slot}-chips">${chipsFor(slot,"start")}</div>`;
+}
+function chipsFor(slot, step){
+  const buy = `<button class="pri" onclick="convoPick('${slot}','buy')">Buy the <span data-vname="${slot}">${variantOf(slot)?.n || BRANDS.acer.variants[0].n}</span></button>`;
+  const cmp = `<button onclick="convoPick('${slot}','compare')">Compare the three</button>`;
+  const quote = `<button onclick="convoPick('${slot}','quote')">Get a business quote</button>`;
+  const no = `<button onclick="convoPick('${slot}','no')">Not interested</button>`;
+  if(step==="start") return buy+cmp+quote+no;
+  if(step==="compare") return buy+quote;
+  if(step==="quoted") return buy;
+  return "";
+}
+function convoAppend(slot, html, me){
+  const chips=document.getElementById(slot+"-chips"); if(!chips) return;
+  const d=document.createElement("div"); d.className="cmsg"+(me?" me":"");
+  d.innerHTML = me ? `<span class="ma round">${ME_AV()}</span><div class="mb"><div class="mh">${ME.name} <small>· now</small></div><p>${html}</p></div>`
+                   : `<span class="ma">${LG.acer}</span><div class="mb"><div class="mh">Acer for Business <small>· now</small></div>${html}</div>`;
+  chips.parentNode.insertBefore(d, chips);
+  const sc=chips.closest(".cv"); if(sc) setTimeout(()=>sc.scrollTop=sc.scrollHeight,30);
+}
+function convoPick(slot, k){
+  const chips=document.getElementById(slot+"-chips"); const v=variantOf(slot).n;
+  if(k==="buy"){ convoAppend(slot,`Buy the ${esc(v)}`,true); chips.innerHTML=""; setTimeout(()=>{ convoAppend(slot,`<p>Here's the ${esc(v)} on the Acer Store.</p>`); chips.innerHTML=chipsFor(slot,"quoted"); shop(slot); },500); return; }
+  if(k==="compare"){ convoAppend(slot,"Compare the three",true); chips.innerHTML="";
+    setTimeout(()=>{ convoAppend(slot,`<p>Quick guide to the three in the video:</p><ul><li><b>Predator Helios Neo 16 AI</b>: for heavy creative, 3D and gaming work</li><li><b>Acer Chromebook 314</b>: light and simple for frontline and shared desks</li><li><b>Nitro V 16 AI</b>: strong performance at a lower price</li></ul><p style="margin-top:6px">Tap any of them in the video above to see it again.</p>`); chips.innerHTML=chipsFor(slot,"compare"); },600); return; }
+  if(k==="quote"){ convoAppend(slot,"Get a business quote",true); chips.innerHTML=""; setTimeout(()=>{ openLead(slot); chips.innerHTML=chipsFor(slot,"compare"); },400); return; }
+  if(k==="no"){ convoAppend(slot,"Not interested",true); chips.innerHTML=""; setTimeout(()=>convoAppend(slot,`<p>Thanks for letting us know, ${ME.first}. We won't send you this message again.</p>`),500); }
+}
+function openConvo(){
+  const w=document.getElementById("cwin");
+  if(w.classList.contains("on")) return;
+  document.getElementById("cwin-lg").innerHTML=LG.acer;
+  document.getElementById("cwin-name").textContent="Acer for Business";
+  document.getElementById("cwin-body").innerHTML = convoStart("dock-acer");
+  w.classList.add("on"); document.getElementById("dock-bdg").style.display="none";
+  document.querySelector(".thr[data-t='acer']")?.classList.remove("unread");
+  observeFlicks();
+}
+function closeConvo(){
+  const w=document.getElementById("cwin");
+  const h=w.querySelector('.flick[data-slot="dock-acer"]'); if(h) unmount(h);
+  delete SLOTS["dock-acer"]; w.classList.remove("on"); w.querySelector("#cwin-body").innerHTML="";
+}
+function toggleDock(){ const d=document.getElementById("dock"); d.classList.toggle("open"); }
+function threadRows(where){
+  const T=[
+    {t:"acer", lg:LG.acer, sq:true, n:"Acer for Business", p:"Sponsored · Refreshing laptops for your team?", d:"Nov 2", unread:true},
+    {t:"cross", lg:LG.cross, sq:true, n:"Cross", p:"Sponsored · Gifts your clients will keep", d:"Nov 1"},
+    {t:"sam", lg:PEOPLE.sam.av(), n:"Sam Whitaker", p:"Sam: Works for me, see you at 10", d:"Oct 31"},
+    {t:"dan", lg:PEOPLE.dan.av(), n:"Daniel Okafor", p:"You: Thanks, will send the deck today", d:"Oct 30"},
+    {t:"lena", lg:PEOPLE.lena.av(), n:"Lena Fischer", p:"Lena: Are you open to a quick chat about a…", d:"Oct 28"}];
+  return T.map(r=>`<button class="thr ${r.unread?"unread":""}" data-t="${r.t}" onclick="${where==="dock" ? (r.t==="acer"?"openConvo()":(r.t==="cross"?"location.hash='#/messaging/cross'":"toast('Only the sponsored threads are live in this demo')")) : `pickThread('${r.t}')`}">
+      <span class="tav ${r.sq?"sq":""}">${r.lg}</span><span class="tt"><span class="row"><b>${r.n}</b><small>${r.d}</small></span><p>${r.p}</p></span></button>`).join("");
+}
+function renderDockList(){ document.getElementById("dock-list").innerHTML = threadRows("dock"); }
+
+/* ---------- Lead gen form ---------- */
+let LEAD_SLOT=null;
+function openLead(slot){
+  LEAD_SLOT=slot; const cur=variantOf(slot).n;
+  setTimeout(()=>{ const b=document.getElementById("lgf-body"); if(b) b.scrollTop=0; },0);
+  document.getElementById("lgf-body").innerHTML = `
+    <div class="brand"><span class="lg">${LG.acer}</span><span><b>Acer for Business</b><span>Laptops for teams, with volume pricing</span></span></div>
+    <p class="lead">Tell us about your team and an Acer for Business rep will send a quote.</p>
+    <div class="me"><span class="a">${ME_AV()}</span><span><b>${ME.name}</b><br><span style="font-size:12px;color:var(--t2)">${ME.title} at ${ME.company}</span></span></div>
+    <label>First name</label><input value="${ME.first}"><label>Last name</label><input value="${ME.last}">
+    <label>Email address</label><input value="${ME.email}"><label>Company name</label><input value="${ME.company}">
+    <label>Job title</label><input value="${ME.title}"><label>Country/Region</label><input value="${ME.country}">
+    <label>Which model are you interested in?</label><select id="lgf-model">${BRANDS.acer.variants.map(v=>`<option ${v.n===cur?"selected":""}>${v.n}</option>`).join("")}</select>
+    <label>How many laptops?</label><select><option>10 to 49</option><option selected>50 to 249</option><option>250 or more</option></select>
+    <p class="fine">The model above is pre-selected from the one you last viewed in the video. Submitting shares your info with Acer, per their privacy policy. LinkedIn will always notify you when you share information.</p>`;
+  document.getElementById("lgf").classList.add("on");
+}
+function closeLead(){ document.getElementById("lgf").classList.remove("on"); }
+function submitLead(){
+  const m=document.getElementById("lgf-model").value; closeLead();
+  if(LEAD_SLOT) { convoAppend(LEAD_SLOT, `<p>Thanks ${ME.first}. A rep will reach out about the <b>${esc(m)}</b> for ${esc(ME.company)} within one business day.</p>`); const c=document.getElementById(LEAD_SLOT+"-chips"); if(c) c.innerHTML=chipsFor(LEAD_SLOT,"quoted"); }
+  toast("Demo only: nothing was sent");
+}
+
+/* ---------- Messaging page ---------- */
+let CUR_THREAD="cross";
+function renderMessaging(t){
+  SLOTS={}; CUR_THREAD=t||"cross";
+  document.getElementById("nav-msg").innerHTML = navHTML("msg");
+  document.getElementById("mlist").innerHTML = threadRows("page");
+  document.querySelectorAll("#mlist .thr").forEach(el=>el.classList.toggle("cur", el.dataset.t===CUR_THREAD));
+  const rail = document.getElementById("mrail");
+  if(CUR_THREAD==="acer"){
+    document.querySelector("#mlist .thr[data-t='acer']")?.classList.remove("unread");
+    document.getElementById("mrh").innerHTML = `<span style="width:32px;height:32px;border-radius:4px;overflow:hidden">${LG.acer}</span><b>Acer for Business</b><span class="icb">${DOTS}</span>`;
+    document.getElementById("mthread").innerHTML = `<div data-anchor="msg-acer">${convoStart("page-acer")}</div>`;
+    rail.innerHTML = railGeneric();
+  } else {
+    document.getElementById("mrh").innerHTML = `<span style="width:32px;height:32px;border-radius:4px;overflow:hidden">${LG.cross}</span><b>Cross</b><span class="icb">${DOTS}</span>`;
+    document.getElementById("mthread").innerHTML = `
+      <div class="spbar"><span>Sponsored</span><span>Nov 1</span></div>
+      <div class="who"><span class="lg" style="display:block">${LG.cross}</span><b>Cross</b></div>
+      <div class="day">SATURDAY</div>
+      <div class="cmsg"><span class="ma">${LG.cross}</span><div class="mb"><div class="mh">Cross <small>· 8:02 AM</small></div>
+        <p><b>Gifts your clients will keep</b></p>
+        <p>Hi ${ME.first},</p>
+        <p>Year-end is when clients remember who thought of them. A Cross ballpoint pen is a gift that stays on the desk long after the holidays.</p>
+        <p>Choose from black, chrome or gold. The video on the right lets you see each finish up close.</p>
+        <p>Best,<br>The Cross team</p>
+        <button class="msgcta" onclick="shop('comp-cross')">Shop ballpoint pens</button></div></div>`;
+    rail.innerHTML = `<div class="card compan" data-anchor="msg-cross"><div class="top"><span>Ad</span>${DOTS}</div>${flick("comp-cross","cross")}
+      <div class="cap"><span class="t"><b>Cross ballpoint pens</b><span>Showing <span data-vname="comp-cross">${BRANDS.cross.variants[0].n}</span> · cross.com</span></span><button onclick="shop('comp-cross')">Shop</button></div></div>
+      <div class="foot" style="padding-top:12px"><span>About</span><span>Accessibility</span><span>Help Center</span><br><span>Privacy &amp; Terms ▾</span><span>Ad Choices</span><br><div class="brand"><span style="font-weight:700;color:#0a66c2">Linked</span><span style="display:inline-block;width:14px;height:14px;margin-left:-6px">${LOGO(14)}</span> LinkedIn Corporation © 2026</div></div>`;
+  }
+  observeFlicks();
+}
+function railGeneric(){
+  return `<div class="card news"><h4>Add to your feed <span style="color:var(--t2)">${IC.info}</span></h4>
+    ${["maya","priya","lena"].map(k=>`<div class="it" style="display:flex;gap:10px;align-items:center"><span style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none">${PEOPLE[k].av()}</span><span><b>${PEOPLE[k].n}</b><span>${PEOPLE[k].h}</span></span></div>`).join("")}</div>
+    <div class="foot"><span>About</span><span>Accessibility</span><span>Help Center</span><div class="brand"><span style="font-weight:700;color:#0a66c2">Linked</span><span style="display:inline-block;width:14px;height:14px;margin-left:-6px">${LOGO(14)}</span> LinkedIn Corporation © 2026</div></div>`;
+}
+function pickThread(t){
+  if(t==="acer"||t==="cross"){ location.hash="#/messaging/"+t; return; }
+  toast("Only the sponsored threads are live in this demo");
+}
+
+/* ---------- Mobile ---------- */
+function renderMobile(){
+  SLOTS={};
+  document.getElementById("mhdr").innerHTML = `<a href="#/feed" aria-label="LinkedIn">${LOGO(30)}</a>${IC.search}<span class="sp"></span>${IC.more}<span class="ma">${ME_AV()}</span><span style="color:var(--t2)">${DOTS}</span>`;
+  document.getElementById("mnavb").innerHTML = `<span class="on">${IC.home}Home</span><span>${IC.net}My Network</span><span><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21 13h-8v8h-2v-8H3v-2h8V3h2v8h8z"/></svg>Post</span><span>${IC.bell}Notifications</span><span>${IC.jobs}Jobs</span>`;
+  document.getElementById("mfeed").innerHTML = `
+    <article class="card post" data-anchor="m-amex">${promotedHead("amex")}
+      <div class="ptext">Green, Gold or Platinum. Tap a card to see where it fits your week.</div>
+      ${flick("m-amex","amex")}${hbar("m-amex","amex","American Express® ","Learn more")}
+      <div class="social"><span class="rx">${RX}&nbsp;2,017</span><span>143 comments</span></div>
+      <div class="pact"><button>${IC.like}<span>Like</span></button><button>${IC.cmt}<span>Comment</span></button><button>${IC.rep}<span>Repost</span></button><button>${IC.send}<span>Send</span></button></div></article>
+    ${organic("dan","3h","We moved our whole sales team to a four-day sprint cadence in Q3. Pipeline held, burnout dropped.  <span class=\"more\">…more</span>",["418","37","9"])}
+    <article class="card post" data-anchor="m-acer">${promotedHead("acer")}
+      <div class="ptext">Three laptops, one video. Tap a model to see it in action.</div>
+      <div class="vwrap">${flick("m-acer","acer")}</div>${hbar("m-acer","acer","","Buy now")}
+      <div class="social"><span class="rx">${RX}&nbsp;1,284</span><span>96 comments</span></div>
+      <div class="pact"><button>${IC.like}<span>Like</span></button><button>${IC.cmt}<span>Comment</span></button><button>${IC.rep}<span>Repost</span></button><button>${IC.send}<span>Send</span></button></div></article>
+    <article class="card post" data-anchor="m-cross">
+      <div class="phead"><span class="lg round">${PEOPLE.ava.av()}</span><div class="meta"><div class="n">${PEOPLE.ava.n} <small>· 3rd+</small></div><div class="s">${PEOPLE.ava.h}</div><div class="s">Promoted by Cross</div></div><div class="r"><button class="follow">+ Follow</button></div></div>
+      <div class="ptext">Black, chrome or gold? Tap through and tell me which one your clients would keep on their desk.</div>
+      ${flick("m-cross","cross")}
+      <div class="social"><span class="rx">${RX}&nbsp;642</span><span>58 comments</span></div>
+      <div class="pact"><button>${IC.like}<span>Like</span></button><button>${IC.cmt}<span>Comment</span></button><button>${IC.rep}<span>Repost</span></button><button>${IC.send}<span>Send</span></button></div></article>`;
+  document.getElementById("mfeed").scrollTop=0;
+  // mobile feed scrolls inside the phone: watch that scroller too
+  document.getElementById("mfeed").onscroll = ()=>mountVisible();
+  observeFlicks();
+}
+
+/* =====================================================================
+   Ad selector
+   ===================================================================== */
+const GUIDE = [
+  ["Feed, desktop", [
+    ["Video ad, vertical","#/feed","feed-acer","Acer"],
+    ["Thought Leader ad","#/feed","feed-cross","Cross"],
+    ["Video ad, square","#/feed","feed-amex","Amex"],
+    ["In-stream pre-roll on a creator video","#/feed","feed-instream","Acer"],
+    ["Spotlight ad, right rail","#/feed","spot-amex","Amex"],
+    ["Conversation ad in the messaging window","#/feed","@convo","Acer"]]],
+  ["Messaging", [
+    ["Message ad with companion banner","#/messaging/cross","msg-cross","Cross"],
+    ["Conversation ad with lead gen form","#/messaging/acer","msg-acer","Acer"]]],
+  ["Mobile app", [
+    ["Video ad, square","#/mobile","m-amex","Amex"],
+    ["Video ad, vertical","#/mobile","m-acer","Acer"],
+    ["Thought Leader ad","#/mobile","m-cross","Cross"]]]
+];
+function renderGuide(){
+  let n=0;
+  document.getElementById("gpanel").innerHTML = GUIDE.map(([g,items])=>`<h6>${g}</h6>`+items.map(([t,h,a,b])=>`<button class="gitem" data-h="${h}" onclick="jump('${h}','${a}')"><span class="n">${++n}</span>${t}<span class="b">${b}</span></button>`).join("")).join("");
+  document.getElementById("gcount").textContent=n;
+}
+function toggleGuide(force){
+  const p=document.getElementById("gpanel"), on = typeof force==="boolean" ? force : !p.classList.contains("on");
+  p.classList.toggle("on",on); document.getElementById("gscrim").classList.toggle("on",on);
+  document.getElementById("gpill").setAttribute("aria-expanded", on);
+}
+let pendingAnchor=null;
+function jump(h,a){
+  toggleGuide(false); pendingAnchor=a;
+  if(location.hash===h) focusAnchor(); else location.hash=h;
+}
+function focusAnchor(){
+  if(!pendingAnchor) return; const a=pendingAnchor; pendingAnchor=null;
+  setTimeout(()=>{
+    if(a==="@convo"){ openConvo(); const w=document.getElementById("cwin"); w.classList.remove("pulse"); void w.offsetWidth; w.classList.add("pulse"); return; }
+    const el=document.querySelector(`.view.on [data-anchor="${a}"]`); if(!el) return;
+    const ph=el.closest(".mscroll");
+    if(ph){ ph.scrollTo({top:el.offsetTop-ph.offsetTop-8,behavior:"smooth"}); }
+    else el.scrollIntoView({behavior:"smooth", block: el.offsetHeight > innerHeight-80 ? "start" : "center"});
+    if(!ph && el.offsetHeight > innerHeight-80) setTimeout(()=>scrollBy({top:-64}),450);
+    el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse");
+  }, 250);
+}
+
+/* =====================================================================
+   Router
+   ===================================================================== */
+function route(){
+  const h=location.hash||"#/feed";
+  const path=h.slice(1);
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  document.querySelectorAll(".gitem").forEach(el=>el.classList.toggle("cur", el.dataset.h==="#"+path));
+  if(document.getElementById("cwin").classList.contains("on")) closeConvo();
+  closeLead(); closeSheet();
+  document.body.classList.toggle("no-dock", !path.startsWith("/feed"));
+  if(path.startsWith("/messaging")){ document.getElementById("v-msg").classList.add("on"); renderMessaging(path.split("/")[2]); scrollTo(0,0); }
+  else if(path==="/mobile"){ document.getElementById("v-mobile").classList.add("on"); renderMobile(); scrollTo(0,0); }
+  else { document.getElementById("v-feed").classList.add("on"); renderFeed(); scrollTo(0,0); }
+  focusAnchor();
+}
+addEventListener("hashchange", route);
+renderGuide(); route();
+</script>
+</body>
+</html>
