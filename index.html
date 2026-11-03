@@ -514,14 +514,14 @@ addEventListener("keydown", e=>{ if(e.key==="Escape"){ closeSheet(); closeLead()
 
 /* ---------- icons and avatars ---------- */
 const LOGO = (s=34) => `<svg class="logo" width="${s}" height="${s}" viewBox="0 0 34 34" aria-label="LinkedIn"><rect width="34" height="34" rx="4" fill="#0a66c2"/><path d="M8.6 13.4h3.7v12H8.6zM10.45 7.6a2.15 2.15 0 1 1 0 4.3 2.15 2.15 0 0 1 0-4.3M14.6 13.4h3.55v1.64h.05c.5-.94 1.7-1.94 3.52-1.94 3.76 0 4.45 2.47 4.45 5.69v6.61h-3.7v-5.86c0-1.4-.03-3.2-1.95-3.2-1.95 0-2.25 1.52-2.25 3.1v5.96H14.6z" fill="#fff"/></svg>`;
-const ME_AV = () => `<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(39).jpg" alt="Jordan Ellis" loading="lazy">`;
+const ME_AV = () => `<img class="fimg" src="assets/face-39.jpg" alt="Jordan Ellis">`;
 const PEOPLE = {
-  maya:{n:"Maya Chen", h:"VP Product at Lumen Grid", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(60).jpg" alt="Maya Chen" loading="lazy">`, deg:"2nd"},
-  ava:{n:"Ava Morales", h:"Client gifting and events consultant | Creator", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(55).jpg" alt="Ava Morales" loading="lazy">`, deg:"3rd+"},
-  priya:{n:"Priya Nair", h:"Product designer | Writing about calmer ways to work", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(51).jpg" alt="Priya Nair" loading="lazy">`, deg:"2nd"},
-  dan:{n:"Daniel Brooks", h:"Head of Revenue Operations at Fieldline", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(57).jpg" alt="Daniel Brooks" loading="lazy">`, deg:"1st"},
-  sam:{n:"Sam Whitaker", h:"Engineering Manager at Northwind Labs", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(5).jpg" alt="Sam Whitaker" loading="lazy">`, deg:"1st"},
-  lena:{n:"Lena Fischer", h:"Recruiter at Harbor & Co", av:()=>`<img class="fimg" src="https://huggingface.co/datasets/javi22/this-person-does-not-exist-10k/resolve/main/face%20(10).jpg" alt="Lena Fischer" loading="lazy">`, deg:"2nd"}
+  maya:{n:"Maya Chen", h:"VP Product at Lumen Grid", av:()=>`<img class="fimg" src="assets/face-60.jpg" alt="Maya Chen">`, deg:"2nd"},
+  ava:{n:"Ava Morales", h:"Client gifting and events consultant | Creator", av:()=>`<img class="fimg" src="assets/face-55.jpg" alt="Ava Morales">`, deg:"3rd+"},
+  priya:{n:"Priya Nair", h:"Product designer | Writing about calmer ways to work", av:()=>`<img class="fimg" src="assets/face-51.jpg" alt="Priya Nair">`, deg:"2nd"},
+  dan:{n:"Daniel Brooks", h:"Head of Revenue Operations at Fieldline", av:()=>`<img class="fimg" src="assets/face-57.jpg" alt="Daniel Brooks">`, deg:"1st"},
+  sam:{n:"Sam Whitaker", h:"Engineering Manager at Northwind Labs", av:()=>`<img class="fimg" src="assets/face-5.jpg" alt="Sam Whitaker">`, deg:"1st"},
+  lena:{n:"Lena Fischer", h:"Recruiter at Harbor & Co", av:()=>`<img class="fimg" src="assets/face-10.jpg" alt="Lena Fischer">`, deg:"2nd"}
 };
 const UNS_CREATOR = "https://images.unsplash.com/photo-1555383004-514c5437ec87?w=700&q=80&auto=format&fit=crop";
 const UNS_HIRE = "https://images.unsplash.com/photo-1563714272638-882a6309ba7d?w=900&q=80&auto=format&fit=crop";
